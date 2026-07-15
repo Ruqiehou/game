@@ -1,0 +1,33 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/engine_core",
+    "crates/world",
+    "crates/politics",
+    "crates/military",
+    "crates/events",
+    "crates/ai",
+    "crates/game",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["CK Engine"]
+
+[workspace.dependencies]
+engine_core = { path = "crates/engine_core" }
+world = { path = "crates/world" }
+politics = { path = "crates/politics" }
+military = { path = "crates/military" }
+events = { path = "crates/events" }
+ai = { path = "crates/ai" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rand = "0.8"
+thiserror = "1"
+slotmap = "1"
+indexmap = "2"
+log = "0.4"
+env_logger = "0.11"
