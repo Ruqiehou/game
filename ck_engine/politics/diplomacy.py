@@ -179,17 +179,21 @@ class DiplomacySystem:
     def claims_of(self, who: int) -> List[Claim]:
         return self.claims.get(who, [])
 
-    def expire_treaties(self, year: int) -> List[str]:
+    def expire_treaties(self, year: int, world=None) -> List[str]:
         logs: List[str] = []
         keep: List[Treaty] = []
         for t in self.treaties:
             if t.expires_year <= year:
                 if t.kind == TreatyKind.ALLIANCE:
                     self.flags_mut(t.a, t.b).allied = False
-                    logs.append(f"同盟到期：{t.a} 与 {t.b}")
+                    an = world.character(t.a).name if world and world.character(t.a) else str(t.a)
+                    bn = world.character(t.b).name if world and world.character(t.b) else str(t.b)
+                    logs.append(f"同盟到期：{an} 与 {bn}")
                 elif t.kind == TreatyKind.NON_AGGRESSION:
                     self.flags_mut(t.a, t.b).non_aggression = False
-                    logs.append(f"互不侵犯到期：{t.a} 与 {t.b}")
+                    an = world.character(t.a).name if world and world.character(t.a) else str(t.a)
+                    bn = world.character(t.b).name if world and world.character(t.b) else str(t.b)
+                    logs.append(f"互不侵犯到期：{an} 与 {bn}")
             else:
                 keep.append(t)
         self.treaties = keep

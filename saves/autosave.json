@@ -2,9 +2,9 @@
   "date": [
     1066,
     1,
-    31
+    1
   ],
-  "tick": 30,
+  "tick": 0,
   "player_id": 1,
   "characters": {
     "1": {
@@ -23,7 +23,27 @@
         16
       ],
       "primary_title": 1,
-      "is_ruler": true
+      "is_ruler": true,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [
+        2
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ],
+      "traits": [
+        7,
+        12,
+        1,
+        6
+      ],
+      "opinion_cache": {
+        "6": -25,
+        "9": -20
+      }
     },
     "2": {
       "gold": 50.0,
@@ -34,7 +54,22 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [
+        1
+      ],
+      "children": [
+        3,
+        4,
+        5
+      ],
+      "traits": [
+        9,
+        5
+      ],
+      "opinion_cache": {}
     },
     "3": {
       "gold": 50.0,
@@ -45,7 +80,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 1,
+      "mother": 2,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        10
+      ],
+      "opinion_cache": {}
     },
     "4": {
       "gold": 50.0,
@@ -56,7 +99,16 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 1,
+      "mother": 2,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        11,
+        2
+      ],
+      "opinion_cache": {}
     },
     "5": {
       "gold": 50.0,
@@ -67,7 +119,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 1,
+      "mother": 2,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        3
+      ],
+      "opinion_cache": {}
     },
     "6": {
       "gold": 80,
@@ -78,7 +138,19 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        5,
+        2,
+        11
+      ],
+      "opinion_cache": {
+        "1": -40
+      }
     },
     "7": {
       "gold": 50.0,
@@ -91,7 +163,17 @@
         8
       ],
       "primary_title": 8,
-      "is_ruler": true
+      "is_ruler": true,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        11
+      ],
+      "opinion_cache": {
+        "1": 30
+      }
     },
     "8": {
       "gold": 50.0,
@@ -104,7 +186,18 @@
         14
       ],
       "primary_title": 14,
-      "is_ruler": true
+      "is_ruler": true,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        11,
+        12
+      ],
+      "opinion_cache": {
+        "1": 28
+      }
     },
     "9": {
       "gold": 280,
@@ -120,7 +213,25 @@
         18
       ],
       "primary_title": 5,
-      "is_ruler": true
+      "is_ruler": true,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [
+        10
+      ],
+      "children": [
+        11,
+        12,
+        13
+      ],
+      "traits": [
+        6,
+        1,
+        9
+      ],
+      "opinion_cache": {
+        "1": -30
+      }
     },
     "10": {
       "gold": 50.0,
@@ -131,7 +242,22 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [
+        9
+      ],
+      "children": [
+        11,
+        12,
+        13
+      ],
+      "traits": [
+        8,
+        5
+      ],
+      "opinion_cache": {}
     },
     "11": {
       "gold": 50.0,
@@ -142,7 +268,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 9,
+      "mother": 10,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        8
+      ],
+      "opinion_cache": {}
     },
     "12": {
       "gold": 50.0,
@@ -153,7 +287,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 9,
+      "mother": 10,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        8
+      ],
+      "opinion_cache": {}
     },
     "13": {
       "gold": 50.0,
@@ -164,7 +306,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 9,
+      "mother": 10,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        8
+      ],
+      "opinion_cache": {}
     },
     "14": {
       "gold": 90,
@@ -177,7 +327,19 @@
         19
       ],
       "primary_title": 19,
-      "is_ruler": true
+      "is_ruler": true,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        7,
+        2,
+        8
+      ],
+      "opinion_cache": {
+        "9": 25
+      }
     },
     "15": {
       "gold": 50.0,
@@ -188,7 +350,17 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        8
+      ],
+      "opinion_cache": {
+        "9": 20
+      }
     },
     "16": {
       "gold": 50.0,
@@ -199,7 +371,17 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        10
+      ],
+      "opinion_cache": {
+        "9": 22
+      }
     },
     "17": {
       "gold": 120,
@@ -214,7 +396,20 @@
         17
       ],
       "primary_title": 3,
-      "is_ruler": true
+      "is_ruler": true,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [
+        20
+      ],
+      "children": [],
+      "traits": [
+        6,
+        3
+      ],
+      "opinion_cache": {
+        "1": -5
+      }
     },
     "18": {
       "gold": 100,
@@ -229,7 +424,17 @@
         11
       ],
       "primary_title": 4,
-      "is_ruler": true
+      "is_ruler": true,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        1
+      ],
+      "opinion_cache": {
+        "1": -8
+      }
     },
     "19": {
       "gold": 50.0,
@@ -240,7 +445,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        11
+      ],
+      "opinion_cache": {}
     },
     "20": {
       "gold": 50.0,
@@ -251,7 +464,18 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [
+        17
+      ],
+      "children": [],
+      "traits": [
+        12,
+        3
+      ],
+      "opinion_cache": {}
     },
     "21": {
       "gold": 50.0,
@@ -262,7 +486,16 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        12,
+        5
+      ],
+      "opinion_cache": {}
     },
     "22": {
       "gold": 50.0,
@@ -273,7 +506,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        5
+      ],
+      "opinion_cache": {}
     },
     "23": {
       "gold": 50.0,
@@ -284,7 +525,15 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        3
+      ],
+      "opinion_cache": {}
     },
     "24": {
       "gold": 60,
@@ -295,7 +544,18 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        4,
+        1,
+        8,
+        3
+      ],
+      "opinion_cache": {}
     },
     "25": {
       "gold": 50.0,
@@ -306,7 +566,16 @@
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
-      "is_ruler": false
+      "is_ruler": false,
+      "father": 4294967295,
+      "mother": 4294967295,
+      "spouses": [],
+      "children": [],
+      "traits": [
+        5,
+        8
+      ],
+      "opinion_cache": {}
     }
   },
   "counties": {
@@ -383,63 +652,170 @@
   },
   "titles": {
     "1": {
-      "holder": 1
+      "holder": 1,
+      "de_facto_liege": 4294967295,
+      "de_facto_vassals": [
+        2,
+        3,
+        4
+      ]
     },
     "2": {
-      "holder": 1
+      "holder": 1,
+      "de_facto_liege": 1,
+      "de_facto_vassals": [
+        6,
+        7,
+        8,
+        15,
+        16,
+        14
+      ]
     },
     "3": {
-      "holder": 17
+      "holder": 17,
+      "de_facto_liege": 1,
+      "de_facto_vassals": [
+        9,
+        17
+      ]
     },
     "4": {
-      "holder": 18
+      "holder": 18,
+      "de_facto_liege": 1,
+      "de_facto_vassals": [
+        10,
+        11
+      ]
     },
     "5": {
-      "holder": 9
+      "holder": 9,
+      "de_facto_liege": 4294967295,
+      "de_facto_vassals": [
+        12,
+        13,
+        18,
+        19
+      ]
     },
     "6": {
-      "holder": 1
+      "holder": 1,
+      "de_facto_liege": 2,
+      "de_facto_vassals": []
     },
     "7": {
-      "holder": 1
+      "holder": 1,
+      "de_facto_liege": 2,
+      "de_facto_vassals": []
     },
     "8": {
-      "holder": 7
+      "holder": 7,
+      "de_facto_liege": 2,
+      "de_facto_vassals": []
     },
     "9": {
-      "holder": 17
+      "holder": 17,
+      "de_facto_liege": 3,
+      "de_facto_vassals": []
     },
     "10": {
-      "holder": 18
+      "holder": 18,
+      "de_facto_liege": 4,
+      "de_facto_vassals": []
     },
     "11": {
-      "holder": 18
+      "holder": 18,
+      "de_facto_liege": 4,
+      "de_facto_vassals": []
     },
     "12": {
-      "holder": 9
+      "holder": 9,
+      "de_facto_liege": 5,
+      "de_facto_vassals": []
     },
     "13": {
-      "holder": 9
+      "holder": 9,
+      "de_facto_liege": 5,
+      "de_facto_vassals": []
     },
     "14": {
-      "holder": 8
+      "holder": 8,
+      "de_facto_liege": 2,
+      "de_facto_vassals": []
     },
     "15": {
-      "holder": 1
+      "holder": 1,
+      "de_facto_liege": 2,
+      "de_facto_vassals": []
     },
     "16": {
-      "holder": 1
+      "holder": 1,
+      "de_facto_liege": 2,
+      "de_facto_vassals": []
     },
     "17": {
-      "holder": 17
+      "holder": 17,
+      "de_facto_liege": 3,
+      "de_facto_vassals": []
     },
     "18": {
-      "holder": 9
+      "holder": 9,
+      "de_facto_liege": 5,
+      "de_facto_vassals": []
     },
     "19": {
-      "holder": 14
+      "holder": 14,
+      "de_facto_liege": 5,
+      "de_facto_vassals": []
     }
   },
+  "wars": [],
+  "armies": [],
+  "sieges": [],
+  "diplomacy": {
+    "relations": {
+      "1,9": {
+        "allied": false,
+        "at_war": false,
+        "rival": true,
+        "marriage_pact": false,
+        "non_aggression": false
+      },
+      "17,18": {
+        "allied": true,
+        "at_war": false,
+        "rival": false,
+        "marriage_pact": false,
+        "non_aggression": true
+      }
+    },
+    "treaties": [
+      {
+        "a": 17,
+        "b": 18,
+        "kind": "ALLIANCE",
+        "start": [
+          1066,
+          1,
+          1
+        ],
+        "expires_year": 1116
+      }
+    ],
+    "claims": {
+      "9": [
+        {
+          "title": 1,
+          "county": null,
+          "strength": 80,
+          "pressed": false
+        }
+      ]
+    },
+    "truce_until": {}
+  },
+  "factions": [],
+  "schemes": [],
   "log": [
     "[1066-01-01] 哈罗德·戈德温森 与 伊迪丝·斯旺内斯 成婚",
     "[1066-01-01] 威廉·征服者 与 佛兰德的玛蒂尔达 成婚",
@@ -464,12 +840,9 @@
     "[1066-01-01] 威廉·征服者 获得头衔「卡昂伯爵领」",
     "[1066-01-01] 贝叶的奥多 获得头衔「贝叶伯爵领」",
     "[1066-01-01] 1066 年场景已加载：哈罗德统治英格兰，威廉虎视眈眈。",
-    "[1066-01-01] 托斯蒂格与兄长不和，北方伯爵心怀观望。",
-    "[1066-01-01] 哈罗德·戈德温森 在 米德尔塞克斯 征召 1398 人"
+    "[1066-01-01] 托斯蒂格与兄长不和，北方伯爵心怀观望。"
   ],
   "messages": [
-    "欢迎。点击地图省份查看详情，使用侧栏下达指令。",
-    "征召成功：1398 人 @ 米德尔塞克斯",
-    "时间推进 30 天 → 1066-01-31"
+    "欢迎。点击地图省份查看详情，使用侧栏下达指令。"
   ]
 }

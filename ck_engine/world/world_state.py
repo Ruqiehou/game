@@ -227,7 +227,13 @@ class World:
         if not c:
             return
         cur = c.opinion_cache.get(to, 0) + delta
-        c.opinion_cache[to] = max(-100, min(100, cur))
+        cur = max(-100, min(100, cur))
+        if cur == 0:
+            c.opinion_cache.pop(to, None)
+        else:
+            c.opinion_cache[to] = cur
+        if len(c.opinion_cache) > 100:
+            c.opinion_cache = dict(list(c.opinion_cache.items())[-50:])
 
     # ---------- 继承 ----------
     def _heir_rows(self, ids: List[int]) -> List[Tuple[int, Gender, int, bool]]:

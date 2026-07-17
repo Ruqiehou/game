@@ -66,25 +66,6 @@ class GameSimulation:
             self.ensure_council(r.id)
             self.realm_laws.setdefault(r.id, RealmLaw.feudal_default())
 
-    def _process_health(self) -> None:
-        deaths: List[int] = []
-        for c in list(self.world.alive_characters()):
-            age = c.age_at(self.world.date)
-            if age > 45:
-                c.health -= 0.002 * (age - 45)
-            if age > 60:
-                c.health -= 0.005
-            if 7 in c.traits:
-                c.health -= 0.01
-            if random.random() < 0.001:
-                c.health -= 0.5
-                c.add_stress(10)
-            if c.health <= 0:
-                deaths.append(c.id)
-        for did in deaths:
-            law = self.realm_laws.get(did)
-            self.world.on_death(did, law=law)
-
     def ensure_council(self, ruler: int) -> None:
         candidates = []
         for c in self.world.alive_characters():
@@ -116,10 +97,11 @@ class GameSimulation:
             self.tick_month()
         if self.world.date.is_year_start():
             self.world.push_log(f"—— {self.world.date.year} 年来临 ——")
-            for line in self.diplomacy.expire_treaties(self.world.date.year):
+            for line in self.diplomacy.expire_treaties(self.world.date.year, world=self.world):
                 self.world.push_log(line)
 
     def tick_month(self) -> None:
+        self.world.process_health()
         self.world.process_monthly_economy()
         self.world.process_fertility()
 

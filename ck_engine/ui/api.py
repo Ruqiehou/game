@@ -396,8 +396,9 @@ class GameAPI:
         self.notify("举办宴会：威望+15，压力-10")
 
     def _save(self) -> None:
-        """轻量快照：日期、玩家、金币/威望、省份 holder、军团。"""
+        """完整快照：日期、玩家、人物、省份、头衔、战争、外交、派系、阴谋、军团、围城。"""
         w = self.sim.world
+        sim = self.sim
         data = {
             "date": [w.date.year, w.date.month, w.date.day],
             "tick": w.tick,
@@ -413,6 +414,12 @@ class GameAPI:
                     "held_titles": list(c.held_titles),
                     "primary_title": c.primary_title,
                     "is_ruler": c.is_ruler,
+                    "father": c.father,
+                    "mother": c.mother,
+                    "spouses": list(c.spouses),
+                    "children": list(c.children),
+                    "traits": list(c.traits),
+                    "opinion_cache": dict(c.opinion_cache),
                 }
                 for c in w.characters.values()
             },
@@ -421,9 +428,57 @@ class GameAPI:
                 for c in w.map.iter()
             },
             "titles": {
-                str(t.id): {"holder": t.holder}
+                str(t.id): {"holder": t.holder, "de_facto_liege": t.de_facto_liege, "de_facto_vassals": list(t.de_facto_vassals)}
                 for t in w.titles.values()
             },
+            "wars": [
+                {
+                    "id": war.id, "name": war.name, "cb": war.cb.name,
+                    "attacker_primary": war.attacker_primary, "defender_primary": war.defender_primary,
+                    "start": [war.start.year, war.start.month, war.start.day],
+                    "warscore": war.warscore, "active": war.active,
+                    "result": war.result.name,
+                    "participants": [{"character": p.character, "is_attacker": p.is_attacker, "joined": [p.joined.year, p.joined.month, p.joined.day]} for p in war.participants],
+                }
+                for war in sim.wars.wars.values()
+            ],
+            "armies": [
+                {
+                    "id": a.id, "owner": a.owner, "name": a.name, "location": a.location,
+                    "commander": a.commander, "status": a.status.name, "morale": a.morale,
+                    "path": list(a.path), "stacks": [{"unit_type": s.unit_type.name, "men": s.men} for s in a.stacks],
+                }
+                for a in sim.wars.armies.values() if a.status != ArmyStatus.DISBANDED
+            ],
+            "sieges": [
+                {
+                    "id": s.id, "county": s.county, "attacker_army": s.attacker_army,
+                    "attacker": s.attacker, "defender": s.defender, "fort_level": s.fort_level,
+                    "garrison": s.garrison, "progress": s.progress, "started": [s.started.year, s.started.month, s.started.day] if s.started else None,
+                }
+                for s in sim.sieges.sieges.values() if s.active
+            ],
+            "diplomacy": {
+                "relations": {f"{k[0]},{k[1]}": {"allied": v.allied, "at_war": v.at_war, "rival": v.rival, "marriage_pact": v.marriage_pact, "non_aggression": v.non_aggression} for k, v in sim.diplomacy.relations.items()},
+                "treaties": [{"a": t.a, "b": t.b, "kind": t.kind.name, "start": [t.start.year, t.start.month, t.start.day], "expires_year": t.expires_year} for t in sim.diplomacy.treaties],
+                "claims": {str(k): [{"title": c.title, "county": c.county, "strength": c.strength, "pressed": c.pressed} for c in v] for k, v in sim.diplomacy.claims.items()},
+                "truce_until": {f"{k[0]},{k[1]}": v for k, v in sim.diplomacy.truce_until.items()},
+            },
+            "factions": [
+                {
+                    "id": f.id, "kind": f.kind.name, "target_liege": f.target_liege,
+                    "members": list(f.members), "power": f.power, "discontent": f.discontent,
+                }
+                for f in sim.factions.factions.values()
+            ],
+            "schemes": [
+                {
+                    "id": s.id, "kind": s.kind.name, "owner": s.owner, "target": s.target,
+                    "progress": s.progress, "secrecy": s.secrecy, "started": [s.started.year, s.started.month, s.started.day] if s.started else None,
+                    "active": s.active,
+                }
+                for s in sim.schemes.schemes.values() if s.active
+            ],
             "log": w.log[-100:],
             "messages": self.messages[-20:],
         }
@@ -438,8 +493,15 @@ class GameAPI:
         # 新开局再覆盖动态状态，保证 ID 一致
         self.sim = GameSimulation()
         w = self.sim.world
+        sim = self.sim
         from ck_engine.core import GameDate
         from ck_engine.world.character import LifeState
+        from ck_engine.military.war import War, WarParticipant, WarResult
+        from ck_engine.military.army import Army, ArmyStatus, UnitType
+        from ck_engine.military.siege import Siege
+        from ck_engine.politics.diplomacy import CasusBelli, Treaty, TreatyKind, Claim, RelationFlags
+        from ck_engine.politics.factions import Faction, FactionKind
+        from ck_engine.politics.schemes import Scheme, SchemeKind
 
         y, m, d = data["date"]
         w.date = GameDate(y, m, d)
@@ -453,6 +515,12 @@ class GameAPI:
             c.piety = row.get("piety", c.piety)
             c.stress = row.get("stress", 0)
             c.health = row.get("health", c.health)
+            c.father = row.get("father", c.father)
+            c.mother = row.get("mother", c.mother)
+            c.spouses = list(row.get("spouses", []))
+            c.children = list(row.get("children", []))
+            c.traits = list(row.get("traits", []))
+            c.opinion_cache = {int(k): v for k, v in row.get("opinion_cache", {}).items()}
             if row.get("life") == "DEAD":
                 c.life = LifeState.DEAD
                 c.is_ruler = False
@@ -464,12 +532,113 @@ class GameAPI:
             t = w.title(int(tid))
             if t:
                 t.holder = row["holder"]
+                t.de_facto_liege = row.get("de_facto_liege", t.de_facto_liege)
+                t.de_facto_vassals = list(row.get("de_facto_vassals", []))
         for cid, row in data.get("counties", {}).items():
             county = w.map.get(int(cid))
             if county:
                 county.holder = row["holder"]
                 county.control = row.get("control", county.control)
                 county.development = row.get("development", county.development)
+
+        # 恢复战争
+        sim.wars.wars.clear()
+        sim.wars.next_war = 1
+        for row in data.get("wars", []):
+            war = War(
+                id=row["id"], name=row["name"], cb=CasusBelli[row["cb"]],
+                attacker_primary=row["attacker_primary"], defender_primary=row["defender_primary"],
+                start=GameDate(*row["start"]), warscore=row["warscore"], active=row["active"],
+                result=WarResult[row["result"]],
+            )
+            war.participants = [
+                WarParticipant(character=p["character"], is_attacker=p["is_attacker"], joined=GameDate(*p["joined"]))
+                for p in row.get("participants", [])
+            ]
+            sim.wars.wars[war.id] = war
+            sim.wars.next_war = max(sim.wars.next_war, war.id + 1)
+
+        # 恢复军团
+        sim.wars.armies.clear()
+        sim.wars.next_army = 1
+        for row in data.get("armies", []):
+            army = Army(
+                id=row["id"], owner=row["owner"], name=row["name"],
+                location=row["location"], commander=row["commander"],
+            )
+            army.status = ArmyStatus[row["status"]]
+            army.morale = row.get("morale", 100.0)
+            army.path = list(row.get("path", []))
+            for s in row.get("stacks", []):
+                army.add_men(UnitType[s["kind"]], s["men"])
+            sim.wars.armies[army.id] = army
+            sim.wars.next_army = max(sim.wars.next_army, army.id + 1)
+
+        # 恢复围城
+        sim.sieges.sieges.clear()
+        sim.sieges.next_siege = 1
+        for row in data.get("sieges", []):
+            siege = Siege(
+                siege_id=row["siege_id"], county=row["county"], attacker_army=row["attacker_army"],
+                attacker=row["attacker"], defender=row["defender"], fort_level=row["fort_level"],
+                garrison=row["garrison"], start=GameDate(*row["start"]),
+            )
+            siege.progress = row.get("progress", 0.0)
+            sim.sieges.sieges[siege.siege_id] = siege
+            sim.sieges.next_siege = max(sim.sieges.next_siege, siege.siege_id + 1)
+
+        # 恢复外交
+        sim.diplomacy.relations.clear()
+        for k, v in data.get("diplomacy", {}).get("relations", {}).items():
+            a, b = map(int, k.split(","))
+            sim.diplomacy.relations[(a, b)] = RelationFlags(
+                allied=v.get("allied", False), at_war=v.get("at_war", False),
+                rival=v.get("rival", False), marriage_pact=v.get("marriage_pact", False),
+                non_aggression=v.get("non_aggression", False),
+            )
+        sim.diplomacy.treaties.clear()
+        for row in data.get("diplomacy", {}).get("treaties", []):
+            sim.diplomacy.treaties.append(Treaty(
+                a=row["a"], b=row["b"], kind=TreatyKind[row["kind"]],
+                start=GameDate(*row["start"]), expires_year=row["expires_year"],
+            ))
+        sim.diplomacy.claims.clear()
+        for k, v in data.get("diplomacy", {}).get("claims", {}).items():
+            sim.diplomacy.claims[int(k)] = [
+                Claim(claimant=int(k), title=c["title"], county=c.get("county"), strength=c.get("strength", 50), pressed=c.get("pressed", False))
+                for c in v
+            ]
+        sim.diplomacy.truce_until.clear()
+        for k, v in data.get("diplomacy", {}).get("truce_until", {}).items():
+            a, b = map(int, k.split(","))
+            sim.diplomacy.truce_until[(a, b)] = v
+
+        # 恢复派系
+        sim.factions.factions.clear()
+        sim.factions.next_id = 1
+        for row in data.get("factions", []):
+            faction = Faction(
+                id=row["id"], kind=FactionKind[row["kind"]], target_liege=row["target_liege"],
+                members=list(row["members"]), power=row["power"], discontent=row["discontent"],
+            )
+            sim.factions.factions[faction.id] = faction
+            sim.factions.next_id = max(sim.factions.next_id, faction.id + 1)
+
+        # 恢复阴谋
+        sim.schemes.schemes.clear()
+        sim.schemes.next_id = 1
+        for row in data.get("schemes", []):
+            started = GameDate(*row["started"]) if row.get("started") else None
+            scheme = Scheme(
+                id=row["id"], kind=SchemeKind[row["kind"]], owner=row["owner"], target=row["target"],
+                started=started,
+            )
+            scheme.progress = row.get("progress", 0.0)
+            scheme.secrecy = row.get("secrecy", 100.0)
+            scheme.active = row.get("active", True)
+            sim.schemes.schemes[scheme.id] = scheme
+            sim.schemes.next_id = max(sim.schemes.next_id, scheme.id + 1)
+
         w.log = list(data.get("log", []))
         self.messages = list(data.get("messages", ["读档完成"]))
         self.player_id = int(data.get("player_id", self._default_player()))

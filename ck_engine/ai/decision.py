@@ -35,10 +35,14 @@ class AiDirector:
         wars: WarManager,
         diplomacy: DiplomacySystem,
         schemes: SchemeSystem,
+        skip_ids: set = None,
     ) -> List[AiAction]:
+        skip_ids = skip_ids or set()
         actions: List[AiAction] = []
         rulers = [c.id for c in world.rulers()]
         for ruler in rulers:
+            if ruler in skip_ids:
+                continue
             profile = AiPersonality.profile_of(world, ruler)
             at_war = any(w.involves(ruler) for w in wars.active_wars())
             c = world.character(ruler)
@@ -111,7 +115,7 @@ class AiDirector:
                 and profile.aggression > 0.55
                 and random.random() < profile.aggression * 0.12
             ):
-                target = find_war_target(world, wars, diplomacy, ruler)
+                target = find_war_target(world, wars, diplomacy, ruler, skip_ids=skip_ids)
                 if target and target not in skip_ids:
                     cb = (
                         CasusBelli.RIVALRY
@@ -361,13 +365,14 @@ def find_spouse_candidate(world: World, who: int) -> Optional[int]:
 
 
 def find_war_target(
-    world: World, wars: WarManager, diplomacy: DiplomacySystem, who: int
+    world: World, wars: WarManager, diplomacy: DiplomacySystem, who: int, skip_ids: set = None,
 ) -> Optional[int]:
+    skip_ids = skip_ids or set()
     my_power = estimate_levies(world, who) + wars.total_men_of(who)
     best = None
     best_p = 10**9
     for r in world.rulers():
-        if r.id == who:
+        if r.id == who or r.id in skip_ids:
             continue
         if not diplomacy.can_declare_war(who, r.id, world.date.year):
             continue
