@@ -35,8 +35,7 @@
         5
       ],
       "traits": [
-        7,
-        12,
+        2,
         1,
         6
       ],
@@ -66,8 +65,8 @@
         5
       ],
       "traits": [
-        9,
-        5
+        3,
+        12
       ],
       "opinion_cache": {}
     },
@@ -86,7 +85,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10
+        12,
+        9
       ],
       "opinion_cache": {}
     },
@@ -105,8 +105,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11,
-        2
+        2,
+        1
       ],
       "opinion_cache": {}
     },
@@ -125,6 +125,7 @@
       "spouses": [],
       "children": [],
       "traits": [
+        7,
         3
       ],
       "opinion_cache": {}
@@ -144,7 +145,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        5,
+        8,
         2,
         11
       ],
@@ -169,7 +170,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        9
       ],
       "opinion_cache": {
         "1": 30
@@ -192,8 +193,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11,
-        12
+        11
       ],
       "opinion_cache": {
         "1": 28
@@ -225,8 +225,9 @@
         13
       ],
       "traits": [
-        6,
+        8,
         1,
+        6,
         9
       ],
       "opinion_cache": {
@@ -254,8 +255,8 @@
         13
       ],
       "traits": [
-        8,
-        5
+        5,
+        8
       ],
       "opinion_cache": {}
     },
@@ -274,6 +275,7 @@
       "spouses": [],
       "children": [],
       "traits": [
+        10,
         8
       ],
       "opinion_cache": {}
@@ -293,7 +295,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        8
+        8,
+        6
       ],
       "opinion_cache": {}
     },
@@ -312,7 +315,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        8
+        9
       ],
       "opinion_cache": {}
     },
@@ -333,7 +336,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        7,
+        3,
         2,
         8
       ],
@@ -356,7 +359,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        8
+        3,
+        7
       ],
       "opinion_cache": {
         "9": 20
@@ -377,7 +381,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10
+        3
       ],
       "opinion_cache": {
         "9": 22
@@ -404,7 +408,7 @@
       ],
       "children": [],
       "traits": [
-        6,
+        4,
         3
       ],
       "opinion_cache": {
@@ -430,6 +434,7 @@
       "spouses": [],
       "children": [],
       "traits": [
+        11,
         1
       ],
       "opinion_cache": {
@@ -451,7 +456,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        1,
+        8
       ],
       "opinion_cache": {}
     },
@@ -472,8 +478,7 @@
       ],
       "children": [],
       "traits": [
-        12,
-        3
+        7
       ],
       "opinion_cache": {}
     },
@@ -492,8 +497,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        12,
-        5
+        11
       ],
       "opinion_cache": {}
     },
@@ -512,7 +516,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        5
+        11
       ],
       "opinion_cache": {}
     },
@@ -531,7 +535,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        3
+        11
       ],
       "opinion_cache": {}
     },
@@ -550,7 +554,6 @@
       "spouses": [],
       "children": [],
       "traits": [
-        4,
         1,
         8,
         3
@@ -572,8 +575,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        5,
-        8
+        7,
+        5
       ],
       "opinion_cache": {}
     }
@@ -812,7 +815,8 @@
         }
       ]
     },
-    "truce_until": {}
+    "truce_until": {},
+    "war_exhaustion": {}
   },
   "factions": [],
   "schemes": [],

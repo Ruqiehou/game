@@ -108,6 +108,7 @@ class DiplomacySystem:
     treaties: List[Treaty] = field(default_factory=list)
     claims: Dict[int, List[Claim]] = field(default_factory=dict)
     truce_until: Dict[Tuple[int, int], int] = field(default_factory=dict)
+    war_exhaustion: Dict[int, float] = field(default_factory=dict)
 
     @staticmethod
     def pair_key(a: int, b: int) -> Tuple[int, int]:
@@ -147,8 +148,21 @@ class DiplomacySystem:
     def has_truce(self, a: int, b: int, year: int) -> bool:
         return self.truce_until.get(self.pair_key(a, b), 0) > year
 
+    def add_war_exhaustion(self, who: int, amount: float = 15.0) -> None:
+        self.war_exhaustion[who] = self.war_exhaustion.get(who, 0.0) + amount
+
+    def tick_war_exhaustion(self) -> None:
+        decayed: Dict[int, float] = {}
+        for who, val in self.war_exhaustion.items():
+            new_val = max(0.0, val - 1.5)
+            if new_val > 0.1:
+                decayed[who] = new_val
+        self.war_exhaustion = decayed
+
     def can_declare_war(self, a: int, b: int, year: int) -> bool:
         if a == b:
+            return False
+        if self.war_exhaustion.get(a, 0.0) >= 60.0:
             return False
         f = self.flags(a, b)
         if f.blocks_war() or f.at_war or self.has_truce(a, b, year):

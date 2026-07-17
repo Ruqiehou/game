@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -23,6 +24,7 @@ class GameAPI:
         self.selected_army: Optional[int] = None
         self.messages: List[str] = ["欢迎。点击地图省份查看详情，使用侧栏下达指令。"]
         self.save_path = Path(__file__).resolve().parents[2] / "saves" / "autosave.json"
+        self._lock = threading.Lock()
 
     def _default_player(self) -> int:
         for c in self.sim.world.alive_characters():
@@ -40,6 +42,10 @@ class GameAPI:
             self.messages = self.messages[-60:]
 
     def snapshot(self) -> Dict[str, Any]:
+        with self._lock:
+            return self._snapshot_unlocked()
+
+    def _snapshot_unlocked(self) -> Dict[str, Any]:
         w = self.sim.world
         player = w.character(self.player_id)
         counties = []
@@ -226,6 +232,10 @@ class GameAPI:
 
     # ---------- 操作 ----------
     def action(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        with self._lock:
+            return self._action_unlocked(payload)
+
+    def _action_unlocked(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         kind = payload.get("action")
         try:
             if kind == "select_county":
@@ -270,7 +280,7 @@ class GameAPI:
                 self.notify(f"未知操作: {kind}")
         except Exception as e:  # noqa: BLE001 — 返回给前端
             self.notify(f"操作失败: {e}")
-        return self.snapshot()
+        return self._snapshot_unlocked()
 
     def _name(self, cid: int) -> str:
         c = self.sim.world.character(cid)
@@ -374,6 +384,8 @@ class GameAPI:
                     )
                     dip.set_at_war(ally, target_id, True)
         self.sim.world.push_log(f"宣战！{name} (#{wid})")
+        dip.add_war_exhaustion(self.player_id)
+        dip.add_war_exhaustion(target_id)
         self.notify(f"已对 {target.name} 宣战")
 
     def _improve(self, target_id: int) -> None:
@@ -463,6 +475,7 @@ class GameAPI:
                 "treaties": [{"a": t.a, "b": t.b, "kind": t.kind.name, "start": [t.start.year, t.start.month, t.start.day], "expires_year": t.expires_year} for t in sim.diplomacy.treaties],
                 "claims": {str(k): [{"title": c.title, "county": c.county, "strength": c.strength, "pressed": c.pressed} for c in v] for k, v in sim.diplomacy.claims.items()},
                 "truce_until": {f"{k[0]},{k[1]}": v for k, v in sim.diplomacy.truce_until.items()},
+                "war_exhaustion": dict(sim.diplomacy.war_exhaustion),
             },
             "factions": [
                 {
@@ -570,22 +583,23 @@ class GameAPI:
             army.morale = row.get("morale", 100.0)
             army.path = list(row.get("path", []))
             for s in row.get("stacks", []):
-                army.add_men(UnitType[s["kind"]], s["men"])
+                army.add_men(UnitType[s["unit_type"]], s["men"])
             sim.wars.armies[army.id] = army
             sim.wars.next_army = max(sim.wars.next_army, army.id + 1)
 
         # 恢复围城
         sim.sieges.sieges.clear()
-        sim.sieges.next_siege = 1
+        sim.sieges.next_id = 1
         for row in data.get("sieges", []):
+            started = GameDate(*row["started"]) if row.get("started") else None
             siege = Siege(
-                siege_id=row["siege_id"], county=row["county"], attacker_army=row["attacker_army"],
+                id=row["id"], county=row["county"], attacker_army=row["attacker_army"],
                 attacker=row["attacker"], defender=row["defender"], fort_level=row["fort_level"],
-                garrison=row["garrison"], start=GameDate(*row["start"]),
+                garrison=row["garrison"], started=started,
             )
             siege.progress = row.get("progress", 0.0)
-            sim.sieges.sieges[siege.siege_id] = siege
-            sim.sieges.next_siege = max(sim.sieges.next_siege, siege.siege_id + 1)
+            sim.sieges.sieges[siege.id] = siege
+            sim.sieges.next_id = max(sim.sieges.next_id, siege.id + 1)
 
         # 恢复外交
         sim.diplomacy.relations.clear()
@@ -612,6 +626,7 @@ class GameAPI:
         for k, v in data.get("diplomacy", {}).get("truce_until", {}).items():
             a, b = map(int, k.split(","))
             sim.diplomacy.truce_until[(a, b)] = v
+        sim.diplomacy.war_exhaustion = {int(k): v for k, v in data.get("diplomacy", {}).get("war_exhaustion", {}).items()}
 
         # 恢复派系
         sim.factions.factions.clear()

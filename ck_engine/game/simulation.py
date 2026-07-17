@@ -104,6 +104,7 @@ class GameSimulation:
         self.world.process_health()
         self.world.process_monthly_economy()
         self.world.process_fertility()
+        self.diplomacy.tick_war_exhaustion()
 
         for rid in [r.id for r in self.world.rulers()]:
             law = self.realm_laws.get(rid)

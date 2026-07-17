@@ -263,6 +263,8 @@ class AiDirector:
                     f"{an} 对 {dn} 的{act.cb.name_zh()}",
                 )
                 diplomacy.set_at_war(act.owner, act.target, True)
+                diplomacy.add_war_exhaustion(act.owner)
+                diplomacy.add_war_exhaustion(act.target)
                 # 同盟自动参战（攻方盟友加入进攻）
                 war = wars.war(wid)
                 if war:
