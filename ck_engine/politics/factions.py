@@ -172,7 +172,7 @@ class FactionSystem:
                     )
                 )
 
-        empty = [f.id for f in self.factions.values() if not f.members]
+        empty = [f.id for f in list(self.factions.values()) if not f.members]
         for fid in empty:
             self.dissolve(fid)
             events.append(

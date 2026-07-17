@@ -64,8 +64,15 @@ class GameDate:
         return self.month == 1 and self.day == 1
 
     def to_ordinal(self) -> int:
+        """近似儒略日序：用于年龄/继承人排序，不要求绝对天文精度。"""
         y, m, d = self.year, self.month, self.day
-        return y * 365 + y // 4 - y // 100 + y // 400 + (m - 1) * 30 + d
+        # 把 1-2 月算到上一年，便于闰日处理
+        if m <= 2:
+            y -= 1
+            m += 12
+        leap = y // 4 - y // 100 + y // 400
+        month_days = (153 * (m - 3) + 2) // 5  # 3月起累计
+        return y * 365 + leap + month_days + d
 
     def __str__(self) -> str:
         return f"{self.year:04d}-{self.month:02d}-{self.day:02d}"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from collections import defaultdict
 from typing import Dict, List
 
 from ck_engine.ai import AiDirector, AiPersonality
@@ -319,57 +320,62 @@ class GameSimulation:
                     owner.add_stress(15)
 
     def resolve_encounters(self) -> None:
-        armies = [
-            (a.id, a.owner, a.location)
-            for a in self.wars.armies.values()
-            if a.is_active()
-        ]
-        pairs = []
-        for i in range(len(armies)):
-            for j in range(i + 1, len(armies)):
-                id_a, owner_a, loc_a = armies[i]
-                id_b, owner_b, loc_b = armies[j]
-                if loc_a != loc_b or owner_a == owner_b:
-                    continue
-                enemies = any(
-                    (
-                        (w.is_attacker(owner_a) and not w.is_attacker(owner_b) and w.involves(owner_b))
-                        or (
-                            w.is_attacker(owner_b)
-                            and not w.is_attacker(owner_a)
-                            and w.involves(owner_a)
-                        )
-                    )
-                    for w in self.wars.active_wars()
-                )
-                if enemies:
-                    pairs.append((id_a, id_b))
-        for id_a, id_b in pairs:
-            army_a = self.wars.armies.get(id_a)
-            army_b = self.wars.armies.get(id_b)
-            if not army_a or not army_b:
+        # 按位置分组军队，O(n)
+        by_loc: Dict[int, List[tuple]] = defaultdict(list)
+        for a in self.wars.armies.values():
+            if a.is_active():
+                by_loc[a.location].append((a.id, a.owner, a.total_men()))
+
+        for loc, loc_armies in by_loc.items():
+            if len(loc_armies) < 2:
                 continue
-            atk_m = (self.world.effective_attrs(army_a.commander) or type("A", (), {"martial": 8})()).martial
-            def_m = (self.world.effective_attrs(army_b.commander) or type("A", (), {"martial": 8})()).martial
-            county = self.world.map.get(army_a.location)
-            width = county.terrain.combat_width() if county else 1.0
-            result = BattleSimulator.resolve(army_a, army_b, atk_m, def_m, width)
-            an = self.world.character(army_a.owner)
-            bn = self.world.character(army_b.owner)
-            self.world.push_log(
-                f"战斗！{(an.name if an else '?')} vs {(bn.name if bn else '?')} — {result.description}"
-            )
-            for w in list(self.wars.active_wars()):
-                if w.involves(army_a.owner) and w.involves(army_b.owner):
-                    if w.is_attacker(army_a.owner):
-                        w.apply_warscore(result.warscore_change)
-                    else:
-                        w.apply_warscore(-result.warscore_change)
-            loser = army_b if result.attacker_won else army_a
-            county = self.world.map.get(loser.location)
-            if county and county.neighbors:
-                loser.location = county.neighbors[0]
-                loser.status = ArmyStatus.RETREATING
+            # 按所有者分组：owner -> [(army_id, men), ...]
+            by_owner: Dict[int, List[tuple]] = defaultdict(list)
+            for aid, owner, men in loc_armies:
+                by_owner[owner].append((aid, men))
+
+            owners = list(by_owner.keys())
+            for i in range(len(owners)):
+                for j in range(i + 1, len(owners)):
+                    oa, ob = owners[i], owners[j]
+                    enemies = any(
+                        (w.is_attacker(oa) and not w.is_attacker(ob) and w.involves(ob))
+                        or (w.is_attacker(ob) and not w.is_attacker(oa) and w.involves(oa))
+                        for w in self.wars.active_wars()
+                    )
+                    if not enemies:
+                        continue
+                    # 每对阵营只打最大规模的一对军队
+                    a_id = max(by_owner[oa], key=lambda row: row[1])[0]
+                    b_id = max(by_owner[ob], key=lambda row: row[1])[0]
+                    army_a = self.wars.armies.get(a_id)
+                    army_b = self.wars.armies.get(b_id)
+                    if not army_a or not army_b:
+                        continue
+                    self._resolve_battle_pair(army_a, army_b)
+
+    def _resolve_battle_pair(self, army_a, army_b) -> None:
+        atk_m = (self.world.effective_attrs(army_a.commander) or type("A", (), {"martial": 8})()).martial
+        def_m = (self.world.effective_attrs(army_b.commander) or type("A", (), {"martial": 8})()).martial
+        county = self.world.map.get(army_a.location)
+        width = county.terrain.combat_width() if county else 1.0
+        result = BattleSimulator.resolve(army_a, army_b, atk_m, def_m, width)
+        an = self.world.character(army_a.owner)
+        bn = self.world.character(army_b.owner)
+        self.world.push_log(
+            f"战斗！{(an.name if an else '?')} vs {(bn.name if bn else '?')} — {result.description}"
+        )
+        for w in list(self.wars.active_wars()):
+            if w.involves(army_a.owner) and w.involves(army_b.owner):
+                if w.is_attacker(army_a.owner):
+                    w.apply_warscore(result.warscore_change)
+                else:
+                    w.apply_warscore(-result.warscore_change)
+        loser = army_b if result.attacker_won else army_a
+        county = self.world.map.get(loser.location)
+        if county and county.neighbors:
+            loser.location = county.neighbors[0]
+            loser.status = ArmyStatus.RETREATING
 
     def try_start_sieges(self) -> None:
         snapshots = [
