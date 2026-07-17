@@ -53,6 +53,22 @@ class War:
     def can_surrender(self) -> bool:
         return self.warscore <= -self.cb.warscore_goal()
 
+    def months_elapsed(self, now: GameDate) -> int:
+        return max(0, (now.to_ordinal() - self.start.to_ordinal()) // 30)
+
+    def can_white_peace(self, now: GameDate, atk_exh: float = 0.0, def_exh: float = 0.0) -> bool:
+        """僵持或双方战争疲劳过高时可白和。"""
+        months = self.months_elapsed(now)
+        if months < 12:
+            return False
+        if abs(self.warscore) <= 15 and months >= 18:
+            return True
+        if abs(self.warscore) <= 25 and atk_exh >= 40 and def_exh >= 40:
+            return True
+        if months >= 36 and abs(self.warscore) < 50:
+            return True
+        return False
+
 
 @dataclass
 class WarManager:

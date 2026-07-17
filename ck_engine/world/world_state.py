@@ -172,10 +172,24 @@ class World:
         l = self.title(liege_title)
         if not v or not l:
             return False
+        if v.de_facto_liege != NONE_ID and v.de_facto_liege != liege_title:
+            old_liege = self.title(v.de_facto_liege)
+            if old_liege and vassal_title in old_liege.de_facto_vassals:
+                old_liege.de_facto_vassals.remove(vassal_title)
         v.de_facto_liege = liege_title
         if vassal_title not in l.de_facto_vassals:
             l.de_facto_vassals.append(vassal_title)
         return True
+
+    def clear_vassal_link(self, title_id: int) -> None:
+        t = self.title(title_id)
+        if not t:
+            return
+        if t.de_facto_liege != NONE_ID:
+            old_liege = self.title(t.de_facto_liege)
+            if old_liege and title_id in old_liege.de_facto_vassals:
+                old_liege.de_facto_vassals.remove(title_id)
+        t.de_facto_liege = NONE_ID
 
     def attach_county_to_title(self, county_id: int, title_id: int) -> bool:
         t = self.title(title_id)
@@ -320,17 +334,29 @@ class World:
             self.push_log(f"{name} 绝嗣，头衔悬空")
 
     def occupy_county(self, county_id: int, new_holder: int) -> bool:
-        """军事占领：同步伯爵领 holder 与对应 COUNTY 头衔。"""
+        """军事占领：同步伯爵领 holder、COUNTY 头衔，并重建 de facto 封臣关系。"""
         county = self.map.get(county_id)
         if not county:
             return False
         county.control = 30.0
         county.holder = new_holder
         tid = county.owner_title
-        if tid != NONE_ID:
-            t = self.title(tid)
-            if t and t.tier == TitleTier.COUNTY:
-                self.grant_title(tid, new_holder)
+        if tid == NONE_ID:
+            return True
+        t = self.title(tid)
+        if not t or t.tier != TitleTier.COUNTY:
+            return True
+        self.grant_title(tid, new_holder)
+        # 占领后：脱离旧领主，挂到征服者主头衔下（若对方更高阶）
+        conqueror = self.character(new_holder)
+        if not conqueror:
+            return True
+        primary = self.title(conqueror.primary_title)
+        if primary and primary.id != tid and primary.tier > t.tier:
+            self.set_vassal(tid, primary.id)
+        else:
+            # 征服者自己直领，清掉旧封臣链
+            self.clear_vassal_link(tid)
         return True
 
     # ---------- 经济 ----------

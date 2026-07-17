@@ -65,8 +65,8 @@
         5
       ],
       "traits": [
-        3,
-        12
+        11,
+        10
       ],
       "opinion_cache": {}
     },
@@ -85,8 +85,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        12,
-        9
+        1,
+        8
       ],
       "opinion_cache": {}
     },
@@ -105,8 +105,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        2,
-        1
+        5,
+        12
       ],
       "opinion_cache": {}
     },
@@ -125,7 +125,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        7,
+        8,
         3
       ],
       "opinion_cache": {}
@@ -145,6 +145,7 @@
       "spouses": [],
       "children": [],
       "traits": [
+        4,
         8,
         2,
         11
@@ -170,7 +171,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        9
+        5
       ],
       "opinion_cache": {
         "1": 30
@@ -193,7 +194,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        12
       ],
       "opinion_cache": {
         "1": 28
@@ -225,7 +226,7 @@
         13
       ],
       "traits": [
-        8,
+        7,
         1,
         6,
         9
@@ -255,8 +256,7 @@
         13
       ],
       "traits": [
-        5,
-        8
+        5
       ],
       "opinion_cache": {}
     },
@@ -275,8 +275,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10,
-        8
+        3
       ],
       "opinion_cache": {}
     },
@@ -295,8 +294,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        8,
-        6
+        11
       ],
       "opinion_cache": {}
     },
@@ -315,7 +313,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        9
+        12
       ],
       "opinion_cache": {}
     },
@@ -336,7 +334,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        3,
+        12,
         2,
         8
       ],
@@ -359,8 +357,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        3,
-        7
+        1
       ],
       "opinion_cache": {
         "9": 20
@@ -381,7 +378,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        3
+        6,
+        10
       ],
       "opinion_cache": {
         "9": 22
@@ -408,7 +406,7 @@
       ],
       "children": [],
       "traits": [
-        4,
+        2,
         3
       ],
       "opinion_cache": {
@@ -456,8 +454,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        1,
-        8
+        5,
+        11
       ],
       "opinion_cache": {}
     },
@@ -478,7 +476,8 @@
       ],
       "children": [],
       "traits": [
-        7
+        11,
+        4
       ],
       "opinion_cache": {}
     },
@@ -497,7 +496,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        1,
+        5
       ],
       "opinion_cache": {}
     },
@@ -516,7 +516,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        8
       ],
       "opinion_cache": {}
     },
@@ -535,7 +535,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        1
       ],
       "opinion_cache": {}
     },
@@ -555,6 +555,7 @@
       "children": [],
       "traits": [
         1,
+        4,
         8,
         3
       ],
@@ -575,8 +576,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        7,
-        5
+        6
       ],
       "opinion_cache": {}
     }

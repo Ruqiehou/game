@@ -100,6 +100,17 @@ class FactionSystem:
     def dissolve(self, faction_id: int) -> None:
         self.factions.pop(faction_id, None)
 
+    def appease(self, faction_id: int, amount: float = 25.0) -> bool:
+        """君主安抚：降低不满；过低则解散。"""
+        f = self.factions.get(faction_id)
+        if not f:
+            return False
+        f.discontent = max(0.0, f.discontent - amount)
+        f.ultimatum_sent = False
+        if f.discontent <= 5.0 and f.power < 40.0:
+            self.dissolve(faction_id)
+        return True
+
     def find_for_liege(self, liege: int, kind: FactionKind) -> Optional[int]:
         for f in self.factions.values():
             if f.target_liege == liege and f.kind == kind:

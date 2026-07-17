@@ -265,6 +265,10 @@ class GameAPI:
                 self._improve(int(payload["target_id"]))
             elif kind == "hold_feast":
                 self._feast()
+            elif kind == "appease_faction":
+                self._appease_faction(int(payload["faction_id"]))
+            elif kind == "white_peace":
+                self._white_peace(int(payload["war_id"]))
             elif kind == "save":
                 self._save()
             elif kind == "load":
@@ -404,8 +408,64 @@ class GameAPI:
         player.add_gold(-20)
         player.add_prestige(15)
         player.add_stress(-10)
+        # 宴会也安抚针对玩家的派系
+        for f in list(self.sim.factions.factions.values()):
+            if f.target_liege == self.player_id:
+                for mid in list(f.members):
+                    self.sim.world.modify_opinion(mid, self.player_id, 8)
+                self.sim.factions.appease(f.id, 10.0)
         self.sim.world.push_log(f"{player.name} 举办了宴会")
-        self.notify("举办宴会：威望+15，压力-10")
+        self.notify("举办宴会：威望+15，压力-10，派系不满下降")
+
+    def _appease_faction(self, faction_id: int) -> None:
+        f = self.sim.factions.factions.get(faction_id)
+        if not f:
+            raise ValueError("派系不存在")
+        if f.target_liege != self.player_id:
+            raise ValueError("只能安抚针对自己的派系")
+        player = self.sim.world.character(self.player_id)
+        cost = 25
+        if not player or player.gold < cost:
+            raise ValueError(f"金币不足（需要 {cost}）")
+        player.add_gold(-cost)
+        for mid in f.members:
+            self.sim.world.modify_opinion(mid, self.player_id, 12)
+        ok = self.sim.factions.appease(faction_id, 30.0)
+        if not ok or faction_id not in self.sim.factions.factions:
+            self.notify("派系已解散")
+            self.sim.world.push_log(f"{player.name} 成功安抚并解散了一个派系")
+        else:
+            left = self.sim.factions.factions[faction_id]
+            self.notify(f"派系不满降至 {left.discontent:.0f}")
+            self.sim.world.push_log(f"{player.name} 安抚了派系，不满下降")
+
+    def _white_peace(self, war_id: int) -> None:
+        from ck_engine.military.war import WarResult
+
+        w = self.sim.wars.war(war_id)
+        if not w or not w.active:
+            raise ValueError("战争不存在或已结束")
+        if not w.involves(self.player_id):
+            raise ValueError("只能提议自己参与的战争白和")
+        atk_exh = self.sim.diplomacy.war_exhaustion.get(w.attacker_primary, 0.0)
+        def_exh = self.sim.diplomacy.war_exhaustion.get(w.defender_primary, 0.0)
+        # 玩家可主动提议：条件略宽于自动白和
+        months = w.months_elapsed(self.sim.world.date)
+        if months < 6 and abs(w.warscore) > 40:
+            raise ValueError("战况未僵持，无法白和")
+        if not w.can_white_peace(self.sim.world.date, atk_exh, def_exh) and months < 12:
+            raise ValueError("战争时间太短或条件不足")
+        self.sim.wars.end_war(war_id, WarResult.WHITE_PEACE)
+        self.sim.diplomacy.set_at_war(w.attacker_primary, w.defender_primary, False)
+        self.sim.diplomacy.set_truce(
+            w.attacker_primary, w.defender_primary, self.sim.world.date.year + 3
+        )
+        an = self.sim.world.character(w.attacker_primary)
+        dn = self.sim.world.character(w.defender_primary)
+        self.sim.world.push_log(
+            f"白和：{(an.name if an else '?')} 与 {(dn.name if dn else '?')} 停战"
+        )
+        self.notify("已达成白和")
 
     def _save(self) -> None:
         """完整快照：日期、玩家、人物、省份、头衔、战争、外交、派系、阴谋、军团、围城。"""
@@ -515,6 +575,7 @@ class GameAPI:
         from ck_engine.politics.diplomacy import CasusBelli, Treaty, TreatyKind, Claim, RelationFlags
         from ck_engine.politics.factions import Faction, FactionKind
         from ck_engine.politics.schemes import Scheme, SchemeKind
+        from ck_engine.politics.council import Council, CouncilPosition, CouncilTask
 
         y, m, d = data["date"]
         w.date = GameDate(y, m, d)
@@ -650,9 +711,28 @@ class GameAPI:
             )
             scheme.progress = row.get("progress", 0.0)
             scheme.secrecy = row.get("secrecy", 100.0)
-            scheme.active = row.get("active", True)
+            scheme.exposed = bool(row.get("exposed", False))
             sim.schemes.schemes[scheme.id] = scheme
             sim.schemes.next_id = max(sim.schemes.next_id, scheme.id + 1)
+
+        # 恢复内阁
+        sim.councils.by_ruler.clear()
+        for rid, row in data.get("councils", {}).items():
+            council = Council.empty(int(rid))
+            council.chancellor = row.get("chancellor", council.chancellor)
+            council.marshal = row.get("marshal", council.marshal)
+            council.steward = row.get("steward", council.steward)
+            council.spymaster = row.get("spymaster", council.spymaster)
+            council.chaplain = row.get("chaplain", council.chaplain)
+            tasks = {}
+            for pos_name, task_name in row.get("tasks", {}).items():
+                try:
+                    tasks[CouncilPosition[pos_name]] = CouncilTask[task_name]
+                except KeyError:
+                    continue
+            if tasks:
+                council.tasks = tasks
+            sim.councils.by_ruler[int(rid)] = council
 
         w.log = list(data.get("log", []))
         self.messages = list(data.get("messages", ["读档完成"]))

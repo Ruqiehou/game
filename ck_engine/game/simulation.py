@@ -105,7 +105,6 @@ class GameSimulation:
         self.world.process_health()
         self.world.process_monthly_economy()
         self.world.process_fertility()
-        self.diplomacy.tick_war_exhaustion()
 
         for rid in [r.id for r in self.world.rulers()]:
             law = self.realm_laws.get(rid)
@@ -136,13 +135,36 @@ class GameSimulation:
             self.world, self.wars, self.diplomacy, self.schemes, actions
         )
         self.tick_wars()
+        # 先结算战争疲劳增减，再对非交战者衰减
+        at_war_ids = set()
+        for w in self.wars.active_wars():
+            at_war_ids.add(w.attacker_primary)
+            at_war_ids.add(w.defender_primary)
+        self.diplomacy.tick_war_exhaustion(except_ids=at_war_ids)
         self.try_start_sieges()
 
+        # 军队维护费：破产时强制解散部分军团
+        by_owner: Dict[int, List] = {}
         for army in self.wars.armies.values():
             if army.is_active():
-                c = self.world.character(army.owner)
-                if c:
-                    c.add_gold(-army.monthly_maintenance())
+                by_owner.setdefault(army.owner, []).append(army)
+        for owner, armies in by_owner.items():
+            c = self.world.character(owner)
+            if not c:
+                continue
+            cost = sum(a.monthly_maintenance() for a in armies)
+            # 维护费略抬高，避免常备军无代价
+            cost *= 1.25
+            if c.gold >= cost:
+                c.add_gold(-cost)
+                continue
+            # 掏空国库并每月最多解散一支最大军团
+            c.add_gold(-c.gold)
+            armies.sort(key=lambda a: a.total_men(), reverse=True)
+            dis = armies[0]
+            dis.status = ArmyStatus.DISBANDED
+            dis.stacks.clear()
+            self.world.push_log(f"{c.name} 国库空虚，被迫解散 {dis.name}")
 
         for r in list(self.world.rulers()):
             self.ensure_council(r.id)
@@ -197,6 +219,14 @@ class GameSimulation:
                 if target:
                     self.diplomacy.add_claim(rid, target.owner_title, target.id, 50)
                     self.world.push_log(f"{c.name} 伪造了对 {target.name} 的宣称")
+            # 破坏阴谋：压低以本君主为目标的活跃阴谋进度
+            if any("破坏敌对阴谋" in line for line in effect.logs):
+                spy = council.spymaster
+                spy_skill = skill_map.get(spy, (8, 8, 8, 8, 8))[3]
+                for scheme in list(self.schemes.schemes.values()):
+                    if not scheme.exposed and not scheme.is_complete() and scheme.target == rid:
+                        scheme.progress = max(0.0, scheme.progress - spy_skill * 0.4)
+                        scheme.secrecy = max(0.0, scheme.secrecy - spy_skill * 0.2)
 
     def tick_factions(self) -> None:
         vassal_pairs = []
@@ -372,10 +402,38 @@ class GameSimulation:
                 else:
                     w.apply_warscore(-result.warscore_change)
         loser = army_b if result.attacker_won else army_a
-        county = self.world.map.get(loser.location)
-        if county and county.neighbors:
-            loser.location = county.neighbors[0]
-            loser.status = ArmyStatus.RETREATING
+        self._retreat_army(loser)
+
+    def _retreat_army(self, army) -> None:
+        """败军撤退：优先友方领地，其次中立，避开敌方。"""
+        county = self.world.map.get(army.location)
+        if not county or not county.neighbors:
+            army.status = ArmyStatus.RETREATING
+            return
+        enemy_holders = set()
+        for w in self.wars.active_wars():
+            if not w.involves(army.owner):
+                continue
+            for p in w.participants:
+                if w.is_attacker(p.character) != w.is_attacker(army.owner):
+                    enemy_holders.add(p.character)
+        friendly: List[int] = []
+        neutral: List[int] = []
+        hostile: List[int] = []
+        for nid in county.neighbors:
+            n = self.world.map.get(nid)
+            if not n:
+                continue
+            if n.holder == army.owner:
+                friendly.append(nid)
+            elif n.holder in enemy_holders:
+                hostile.append(nid)
+            else:
+                neutral.append(nid)
+        dest = (friendly or neutral or hostile or list(county.neighbors))[0]
+        army.location = dest
+        army.path.clear()
+        army.status = ArmyStatus.RETREATING
 
     def try_start_sieges(self) -> None:
         snapshots = [
@@ -456,12 +514,15 @@ class GameSimulation:
             w = self.wars.war(wid)
             if not w:
                 continue
+            self.diplomacy.add_war_exhaustion(w.attacker_primary, 1.0)
+            self.diplomacy.add_war_exhaustion(w.defender_primary, 0.8)
             if w.warscore > 0:
                 w.apply_warscore(-1)
             elif w.warscore < 0:
                 w.apply_warscore(1)
             if w.can_enforce() or w.warscore >= 100:
                 self.wars.end_war(wid, WarResult.ATTACKER_VICTORY)
+                self.diplomacy.set_at_war(w.attacker_primary, w.defender_primary, False)
                 self.diplomacy.set_truce(
                     w.attacker_primary, w.defender_primary, self.world.date.year + 5
                 )
@@ -484,6 +545,7 @@ class GameSimulation:
                     self.transfer_one_county(w.defender_primary, w.attacker_primary)
             elif w.can_surrender() or w.warscore <= -100:
                 self.wars.end_war(wid, WarResult.DEFENDER_VICTORY)
+                self.diplomacy.set_at_war(w.attacker_primary, w.defender_primary, False)
                 self.diplomacy.set_truce(
                     w.attacker_primary, w.defender_primary, self.world.date.year + 5
                 )
@@ -496,6 +558,24 @@ class GameSimulation:
                     dn.add_prestige(40)
                 if an:
                     an.add_prestige(-20)
+            else:
+                atk_exh = self.diplomacy.war_exhaustion.get(w.attacker_primary, 0.0)
+                def_exh = self.diplomacy.war_exhaustion.get(w.defender_primary, 0.0)
+                if w.can_white_peace(self.world.date, atk_exh, def_exh):
+                    self.wars.end_war(wid, WarResult.WHITE_PEACE)
+                    self.diplomacy.set_at_war(w.attacker_primary, w.defender_primary, False)
+                    self.diplomacy.set_truce(
+                        w.attacker_primary, w.defender_primary, self.world.date.year + 3
+                    )
+                    an = self.world.character(w.attacker_primary)
+                    dn = self.world.character(w.defender_primary)
+                    self.world.push_log(
+                        f"白和：{(an.name if an else '?')} 与 {(dn.name if dn else '?')} 停战"
+                    )
+                    if an:
+                        an.add_prestige(-5)
+                    if dn:
+                        dn.add_prestige(5)
 
     def transfer_one_county(self, frm: int, to: int) -> None:
         loser = self.world.character(frm)
@@ -504,7 +584,9 @@ class GameSimulation:
         for tid in list(loser.held_titles):
             t = self.world.title(tid)
             if t and t.tier == TitleTier.COUNTY and t.counties:
-                self.world.grant_title(tid, to)
+                # 走占领路径，确保 holder + 封臣链同步
+                for cid in list(t.counties):
+                    self.world.occupy_county(cid, to)
                 self.world.push_log(f"和约割让：{t.name}")
                 return
 

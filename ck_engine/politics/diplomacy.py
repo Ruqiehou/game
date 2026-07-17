@@ -151,9 +151,14 @@ class DiplomacySystem:
     def add_war_exhaustion(self, who: int, amount: float = 15.0) -> None:
         self.war_exhaustion[who] = self.war_exhaustion.get(who, 0.0) + amount
 
-    def tick_war_exhaustion(self) -> None:
+    def tick_war_exhaustion(self, except_ids=None) -> None:
+        except_ids = except_ids or set()
         decayed: Dict[int, float] = {}
         for who, val in self.war_exhaustion.items():
+            if who in except_ids:
+                if val > 0.1:
+                    decayed[who] = val
+                continue
             new_val = max(0.0, val - 1.5)
             if new_val > 0.1:
                 decayed[who] = new_val

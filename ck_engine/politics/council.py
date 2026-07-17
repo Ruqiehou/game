@@ -144,22 +144,44 @@ class Council:
     ) -> CouncilMonthlyResult:
         r = CouncilMonthlyResult()
         for pos, who in self.members():
+            # skills: dip, mar, ste, int, lea
             skills = skill_of.get(who, (8, 8, 8, 8, 8))
             task = self.task_of(pos)
-            if pos == CouncilPosition.CHANCELLOR and task == CouncilTask.DOMESTIC_RELATIONS:
-                gain = skills[0] * 0.3
-                r.prestige += gain
-            elif pos == CouncilPosition.CHANCELLOR and task == CouncilTask.FABRICATE_CLAIM:
+            if task == CouncilTask.DOMESTIC_RELATIONS:
+                r.prestige += skills[0] * 0.3
+            elif task == CouncilTask.FABRICATE_CLAIM:
                 r.claim_progress += skills[0] * 0.8
-            elif pos == CouncilPosition.MARSHAL and task == CouncilTask.INCREASE_CONTROL:
+            elif task == CouncilTask.TRAIN_COMMANDERS:
+                r.prestige += skills[1] * 0.15
+                r.control_gain += skills[1] * 0.1
+            elif task == CouncilTask.INCREASE_CONTROL:
                 r.control_gain += skills[1] * 0.4
-            elif pos == CouncilPosition.STEWARD and task == CouncilTask.COLLECT_TAXES:
-                g = skills[2] * 0.6
-                r.gold += g
-            elif pos == CouncilPosition.STEWARD and task == CouncilTask.DEVELOP_COUNTY:
+            elif task == CouncilTask.COLLECT_TAXES:
+                r.gold += skills[2] * 0.6
+            elif task == CouncilTask.DEVELOP_COUNTY:
                 r.development_chance += skills[2] * 0.5
-            elif pos == CouncilPosition.COURT_CHAPLAIN:
+            elif task == CouncilTask.DISRUPT_SCHEMES:
+                r.prestige += skills[3] * 0.1
+                r.logs.append("间谍总管破坏敌对阴谋")
+            elif task == CouncilTask.SUPPORT_MURDER:
+                r.claim_progress += skills[3] * 0.3
+            elif task == CouncilTask.CONVERT_FAITH:
                 r.piety += skills[4] * 0.5
+            elif task == CouncilTask.FABRICATE_HOOK:
+                r.piety += skills[4] * 0.2
+                r.claim_progress += skills[4] * 0.25
+            else:
+                # 职位默认产出，避免空任务白占席位
+                if pos == CouncilPosition.CHANCELLOR:
+                    r.prestige += skills[0] * 0.15
+                elif pos == CouncilPosition.MARSHAL:
+                    r.control_gain += skills[1] * 0.1
+                elif pos == CouncilPosition.STEWARD:
+                    r.gold += skills[2] * 0.2
+                elif pos == CouncilPosition.SPYMASTER:
+                    r.prestige += skills[3] * 0.1
+                elif pos == CouncilPosition.COURT_CHAPLAIN:
+                    r.piety += skills[4] * 0.2
         return r
 
 
