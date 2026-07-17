@@ -140,10 +140,12 @@ class WarManager:
     def total_men_of(self, owner: int) -> int:
         return sum(a.total_men() for a in self.armies.values() if a.owner == owner and a.is_active())
 
-    def tick_movement(self) -> None:
+    def tick_movement(self, move_chance_of=None) -> None:
+        """move_chance_of: Optional[Callable[[Army], float]] 按军队返回移动成功率。"""
         for army in self.armies.values():
             if army.status == ArmyStatus.MOVING:
-                army.advance_move()
+                chance = 1.0 if move_chance_of is None else float(move_chance_of(army))
+                army.advance_move(move_chance=chance)
 
     def disband_empty(self) -> None:
         for army in self.armies.values():

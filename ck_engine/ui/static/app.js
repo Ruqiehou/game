@@ -69,6 +69,7 @@ function renderAll() {
   renderMap();
   renderCounty();
   renderWars();
+  renderFactions();
   renderLists();
 }
 

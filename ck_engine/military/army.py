@@ -98,7 +98,8 @@ class Army:
         return sum(s.men for s in self.stacks)
 
     def combat_power(self) -> float:
-        return sum(s.combat_power() for s in self.stacks) * (self.morale / 100.0)
+        supply_mod = 0.55 + 0.45 * (max(0.0, min(100.0, self.supply)) / 100.0)
+        return sum(s.combat_power() for s in self.stacks) * (self.morale / 100.0) * supply_mod
 
     def monthly_maintenance(self) -> float:
         return sum(s.men * s.unit_type.maintenance() for s in self.stacks)
@@ -118,12 +119,35 @@ class Army:
         self.path = path
         self.status = ArmyStatus.MOVING if path else ArmyStatus.IDLE
 
-    def advance_move(self) -> Optional[int]:
+    def advance_move(self, move_chance: float = 1.0, rng=None) -> Optional[int]:
+        """前进一格；move_chance < 1 时可能因季节/补给停滞。"""
         if not self.path:
             self.status = ArmyStatus.IDLE
             return None
+        if move_chance < 1.0:
+            import random as _random
+
+            r = rng or _random
+            if r.random() > move_chance:
+                return None  # 本步停滞，路径保留
         nxt = self.path.pop(0)
         self.location = nxt
         if not self.path:
             self.status = ArmyStatus.IDLE
         return nxt
+
+    def apply_supply_tick(self, in_friendly: bool, winter: bool) -> None:
+        """日补给：友方恢复，敌境消耗，冬季额外损耗。"""
+        if in_friendly:
+            self.supply = min(100.0, self.supply + 2.5)
+            self.morale = min(100.0, self.morale + 0.3)
+        else:
+            drain = 1.2 if winter else 0.7
+            self.supply = max(0.0, self.supply - drain)
+            if self.supply < 25.0:
+                self.morale = max(5.0, self.morale - 0.8)
+            # 补给耗尽时缓慢非战斗减员
+            if self.supply <= 0.0 and self.stacks:
+                for s in self.stacks:
+                    if s.men > 0:
+                        s.take_casualties(max(1, s.men // 80))

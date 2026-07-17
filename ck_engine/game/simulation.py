@@ -89,7 +89,21 @@ class GameSimulation:
     def tick_day(self) -> None:
         self.world.date = self.world.date.advance_one_day()
         self.world.tick += 1
-        self.wars.tick_movement()
+        season = self.world.date.season()
+        winter = season == Season.WINTER
+
+        def move_chance(army) -> float:
+            chance = 1.0
+            if season == Season.WINTER:
+                chance *= 0.55
+            elif season == Season.AUTUMN:
+                chance *= 0.85
+            if army.supply < 30.0:
+                chance *= 0.7
+            return max(0.2, chance)
+
+        self.wars.tick_movement(move_chance_of=move_chance)
+        self._tick_army_supply(winter=winter)
         self.resolve_encounters()
         self.tick_sieges()
         self.wars.disband_empty()
@@ -100,6 +114,25 @@ class GameSimulation:
             self.world.push_log(f"—— {self.world.date.year} 年来临 ——")
             for line in self.diplomacy.expire_treaties(self.world.date.year, world=self.world):
                 self.world.push_log(line)
+
+    def _tick_army_supply(self, winter: bool) -> None:
+        enemy_holders: Dict[int, set] = {}
+        for w in self.wars.active_wars():
+            atk = {p.character for p in w.participants if p.is_attacker}
+            dfd = {p.character for p in w.participants if not p.is_attacker}
+            for a in atk:
+                enemy_holders.setdefault(a, set()).update(dfd)
+            for d in dfd:
+                enemy_holders.setdefault(d, set()).update(atk)
+        for army in self.wars.armies.values():
+            if not army.is_active():
+                continue
+            county = self.world.map.get(army.location)
+            if not county:
+                continue
+            enemies = enemy_holders.get(army.owner, set())
+            in_friendly = county.holder not in enemies
+            army.apply_supply_tick(in_friendly=in_friendly, winter=winter)
 
     def tick_month(self) -> None:
         self.world.process_health()
@@ -389,7 +422,16 @@ class GameSimulation:
         def_m = (self.world.effective_attrs(army_b.commander) or type("A", (), {"martial": 8})()).martial
         county = self.world.map.get(army_a.location)
         width = county.terrain.combat_width() if county else 1.0
-        result = BattleSimulator.resolve(army_a, army_b, atk_m, def_m, width)
+        season = self.world.date.season()
+        season_mod = {
+            Season.SPRING: 1.0,
+            Season.SUMMER: 1.05,
+            Season.AUTUMN: 0.92,
+            Season.WINTER: 0.8,
+        }.get(season, 1.0)
+        result = BattleSimulator.resolve(
+            army_a, army_b, atk_m, def_m, width, season_mod=season_mod
+        )
         an = self.world.character(army_a.owner)
         bn = self.world.character(army_b.owner)
         self.world.push_log(

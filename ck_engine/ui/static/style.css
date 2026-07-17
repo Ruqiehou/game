@@ -124,6 +124,16 @@ button:active { transform: translateY(1px); }
 .list div { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
 .list.msg { color: #f0d78c; max-height: 90px; }
 .list.log { color: var(--muted); max-height: 120px; }
+.list-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 6px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+}
+button.mini {
+  flex: 0 0 auto; padding: 2px 8px; font-size: 11px;
+  background: #2a3f5f; border: 1px solid var(--border); color: var(--text);
+  border-radius: 6px; cursor: pointer;
+}
+button.mini:hover { background: #35507a; }
 .tag {
   display: inline-block; padding: 1px 6px; border-radius: 999px;
   background: #2a3a50; font-size: 11px; margin-right: 4px;

@@ -197,8 +197,24 @@ class GameAPI:
             for r in w.rulers()
         ]
 
+        factions = []
+        for f in self.sim.factions.factions.values():
+            if f.target_liege != self.player_id:
+                continue
+            factions.append(
+                {
+                    "id": f.id,
+                    "kind": f.kind.name_zh() if hasattr(f.kind, "name_zh") else f.kind.name,
+                    "members": len(f.members),
+                    "power": round(f.power, 1),
+                    "discontent": round(f.discontent, 1),
+                    "ultimatum": f.ultimatum_sent,
+                }
+            )
+
         return {
             "date": str(w.date),
+            "season": w.date.season().name,
             "tick": w.tick,
             "player": player_info,
             "playable": playable,
@@ -206,6 +222,7 @@ class GameAPI:
             "edges": edge_list,
             "armies": armies,
             "wars": wars,
+            "factions": factions,
             "rulers": rulers,
             "log": log,
             "messages": self.messages[-12:],
@@ -547,11 +564,24 @@ class GameAPI:
             "schemes": [
                 {
                     "id": s.id, "kind": s.kind.name, "owner": s.owner, "target": s.target,
-                    "progress": s.progress, "secrecy": s.secrecy, "started": [s.started.year, s.started.month, s.started.day] if s.started else None,
-                    "active": s.active,
+                    "progress": s.progress, "secrecy": s.secrecy,
+                    "started": [s.started.year, s.started.month, s.started.day] if s.started else None,
+                    "exposed": s.exposed,
                 }
-                for s in sim.schemes.schemes.values() if s.active
+                for s in sim.schemes.schemes.values()
+                if not s.exposed and not s.is_complete()
             ],
+            "councils": {
+                str(rid): {
+                    "chancellor": c.chancellor,
+                    "marshal": c.marshal,
+                    "steward": c.steward,
+                    "spymaster": c.spymaster,
+                    "chaplain": c.chaplain,
+                    "tasks": {pos.name: task.name for pos, task in c.tasks.items()},
+                }
+                for rid, c in sim.councils.by_ruler.items()
+            },
             "log": w.log[-100:],
             "messages": self.messages[-20:],
         }
