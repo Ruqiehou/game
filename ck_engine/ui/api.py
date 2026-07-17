@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from ck_engine.ai.personality import AiPersonality
@@ -16,9 +18,11 @@ class GameAPI:
     def __init__(self) -> None:
         self.sim = GameSimulation()
         self.player_id = self._default_player()
+        self.sim.player_ids = {self.player_id}
         self.selected_county: Optional[int] = None
         self.selected_army: Optional[int] = None
         self.messages: List[str] = ["欢迎。点击地图省份查看详情，使用侧栏下达指令。"]
+        self.save_path = Path(__file__).resolve().parents[2] / "saves" / "autosave.json"
 
     def _default_player(self) -> int:
         for c in self.sim.world.alive_characters():
@@ -26,6 +30,9 @@ class GameAPI:
                 return c.id
         rulers = list(self.sim.world.rulers())
         return rulers[0].id if rulers else 1
+
+    def _sync_player(self) -> None:
+        self.sim.player_ids = {self.player_id}
 
     def notify(self, msg: str) -> None:
         self.messages.append(msg)
@@ -227,11 +234,13 @@ class GameAPI:
                 self.selected_army = int(payload["army_id"])
             elif kind == "set_player":
                 self.player_id = int(payload["character_id"])
+                self._sync_player()
                 self.selected_army = None
                 self.notify(f"切换玩家为 {self._name(self.player_id)}")
             elif kind == "advance":
                 days = int(payload.get("days", 1))
                 days = max(1, min(365, days))
+                self._sync_player()
                 self.sim.run_days(days)
                 self.notify(f"时间推进 {days} 天 → {self.sim.world.date}")
             elif kind == "raise_army":

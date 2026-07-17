@@ -1,0 +1,475 @@
+{
+  "date": [
+    1066,
+    1,
+    31
+  ],
+  "tick": 30,
+  "player_id": 1,
+  "characters": {
+    "1": {
+      "gold": 220,
+      "prestige": 320,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [
+        1,
+        2,
+        6,
+        7,
+        15,
+        16
+      ],
+      "primary_title": 1,
+      "is_ruler": true
+    },
+    "2": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "3": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "4": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "5": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "6": {
+      "gold": 80,
+      "prestige": 90,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "7": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [
+        8
+      ],
+      "primary_title": 8,
+      "is_ruler": true
+    },
+    "8": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [
+        14
+      ],
+      "primary_title": 14,
+      "is_ruler": true
+    },
+    "9": {
+      "gold": 280,
+      "prestige": 420,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [
+        5,
+        12,
+        13,
+        18
+      ],
+      "primary_title": 5,
+      "is_ruler": true
+    },
+    "10": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "11": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "12": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "13": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "14": {
+      "gold": 90,
+      "prestige": 110,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [
+        19
+      ],
+      "primary_title": 19,
+      "is_ruler": true
+    },
+    "15": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "16": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "17": {
+      "gold": 120,
+      "prestige": 150,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [
+        3,
+        9,
+        17
+      ],
+      "primary_title": 3,
+      "is_ruler": true
+    },
+    "18": {
+      "gold": 100,
+      "prestige": 140,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [
+        4,
+        10,
+        11
+      ],
+      "primary_title": 4,
+      "is_ruler": true
+    },
+    "19": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "20": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "21": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "22": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "23": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "24": {
+      "gold": 60,
+      "prestige": 80,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    },
+    "25": {
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
+      "stress": 0,
+      "health": 5.0,
+      "life": "ALIVE",
+      "held_titles": [],
+      "primary_title": 4294967295,
+      "is_ruler": false
+    }
+  },
+  "counties": {
+    "1": {
+      "holder": 1,
+      "control": 100.0,
+      "development": 28
+    },
+    "2": {
+      "holder": 1,
+      "control": 100.0,
+      "development": 20
+    },
+    "3": {
+      "holder": 7,
+      "control": 100.0,
+      "development": 18
+    },
+    "4": {
+      "holder": 17,
+      "control": 100.0,
+      "development": 16
+    },
+    "5": {
+      "holder": 18,
+      "control": 100.0,
+      "development": 14
+    },
+    "6": {
+      "holder": 18,
+      "control": 100.0,
+      "development": 10
+    },
+    "7": {
+      "holder": 9,
+      "control": 100.0,
+      "development": 24
+    },
+    "8": {
+      "holder": 9,
+      "control": 100.0,
+      "development": 22
+    },
+    "9": {
+      "holder": 8,
+      "control": 100.0,
+      "development": 12
+    },
+    "10": {
+      "holder": 1,
+      "control": 100.0,
+      "development": 8
+    },
+    "11": {
+      "holder": 1,
+      "control": 100.0,
+      "development": 15
+    },
+    "12": {
+      "holder": 17,
+      "control": 100.0,
+      "development": 13
+    },
+    "13": {
+      "holder": 9,
+      "control": 100.0,
+      "development": 18
+    },
+    "14": {
+      "holder": 14,
+      "control": 100.0,
+      "development": 14
+    }
+  },
+  "titles": {
+    "1": {
+      "holder": 1
+    },
+    "2": {
+      "holder": 1
+    },
+    "3": {
+      "holder": 17
+    },
+    "4": {
+      "holder": 18
+    },
+    "5": {
+      "holder": 9
+    },
+    "6": {
+      "holder": 1
+    },
+    "7": {
+      "holder": 1
+    },
+    "8": {
+      "holder": 7
+    },
+    "9": {
+      "holder": 17
+    },
+    "10": {
+      "holder": 18
+    },
+    "11": {
+      "holder": 18
+    },
+    "12": {
+      "holder": 9
+    },
+    "13": {
+      "holder": 9
+    },
+    "14": {
+      "holder": 8
+    },
+    "15": {
+      "holder": 1
+    },
+    "16": {
+      "holder": 1
+    },
+    "17": {
+      "holder": 17
+    },
+    "18": {
+      "holder": 9
+    },
+    "19": {
+      "holder": 14
+    }
+  },
+  "log": [
+    "[1066-01-01] 哈罗德·戈德温森 与 伊迪丝·斯旺内斯 成婚",
+    "[1066-01-01] 威廉·征服者 与 佛兰德的玛蒂尔达 成婚",
+    "[1066-01-01] 埃德温·麦西亚 与 奥尔吉斯 成婚",
+    "[1066-01-01] 哈罗德·戈德温森 获得头衔「英格兰」",
+    "[1066-01-01] 哈罗德·戈德温森 获得头衔「威塞克斯公国」",
+    "[1066-01-01] 哈罗德·戈德温森 获得头衔「米德尔塞克斯伯爵领」",
+    "[1066-01-01] 哈罗德·戈德温森 获得头衔「威塞克斯伯爵领」",
+    "[1066-01-01] 吉尔思·戈德温森 获得头衔「肯特伯爵领」",
+    "[1066-01-01] 利奥夫温·戈德温森 获得头衔「东盎格利亚伯爵领」",
+    "[1066-01-01] 哈罗德·戈德温森 获得头衔「康沃尔伯爵领」",
+    "[1066-01-01] 哈罗德·戈德温森 获得头衔「苏塞克斯伯爵领」",
+    "[1066-01-01] 埃德温·麦西亚 获得头衔「麦西亚公国」",
+    "[1066-01-01] 埃德温·麦西亚 获得头衔「麦西亚伯爵领」",
+    "[1066-01-01] 埃德温·麦西亚 获得头衔「林肯伯爵领」",
+    "[1066-01-01] 莫卡·诺森布里亚 获得头衔「诺森布里亚公国」",
+    "[1066-01-01] 莫卡·诺森布里亚 获得头衔「约克伯爵领」",
+    "[1066-01-01] 莫卡·诺森布里亚 获得头衔「诺森布里亚伯爵领」",
+    "[1066-01-01] 威廉·征服者 获得头衔「诺曼底公国」",
+    "[1066-01-01] 威廉·征服者 获得头衔「诺曼底伯爵领」",
+    "[1066-01-01] 威廉·征服者 获得头衔「鲁昂伯爵领」",
+    "[1066-01-01] 威廉·征服者 获得头衔「卡昂伯爵领」",
+    "[1066-01-01] 贝叶的奥多 获得头衔「贝叶伯爵领」",
+    "[1066-01-01] 1066 年场景已加载：哈罗德统治英格兰，威廉虎视眈眈。",
+    "[1066-01-01] 托斯蒂格与兄长不和，北方伯爵心怀观望。",
+    "[1066-01-01] 哈罗德·戈德温森 在 米德尔塞克斯 征召 1398 人"
+  ],
+  "messages": [
+    "欢迎。点击地图省份查看详情，使用侧栏下达指令。",
+    "征召成功：1398 人 @ 米德尔塞克斯",
+    "时间推进 30 天 → 1066-01-31"
+  ]
+}
