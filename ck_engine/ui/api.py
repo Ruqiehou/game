@@ -246,9 +246,14 @@ class GameAPI:
                 self._improve(int(payload["target_id"]))
             elif kind == "hold_feast":
                 self._feast()
+            elif kind == "save":
+                self._save()
+            elif kind == "load":
+                self._load()
             elif kind == "new_game":
                 self.sim = GameSimulation()
                 self.player_id = self._default_player()
+                self._sync_player()
                 self.selected_county = None
                 self.selected_army = None
                 self.messages = ["新局开始。"]
@@ -328,6 +333,8 @@ class GameAPI:
         if target_id == self.player_id:
             raise ValueError("不能对自己宣战")
         dip = self.sim.diplomacy
+        if dip.are_allied(self.player_id, target_id):
+            raise ValueError("同盟无法宣战")
         if not dip.can_declare_war(self.player_id, target_id, self.sim.world.date.year):
             raise ValueError("外交上无法宣战（同盟/停战/已交战）")
         if any(
@@ -347,6 +354,16 @@ class GameAPI:
         name = f"{player.name} 对 {target.name} 的{cb.name_zh()}"
         wid = self.sim.wars.declare_war(cb, self.player_id, target_id, self.sim.world.date, name)
         dip.set_at_war(self.player_id, target_id, True)
+        war = self.sim.wars.war(wid)
+        if war:
+            from ck_engine.military.war import WarParticipant
+
+            for ally in dip.allies_of(self.player_id):
+                if ally != target_id and not war.involves(ally):
+                    war.participants.append(
+                        WarParticipant(character=ally, is_attacker=True, joined=self.sim.world.date)
+                    )
+                    dip.set_at_war(ally, target_id, True)
         self.sim.world.push_log(f"宣战！{name} (#{wid})")
         self.notify(f"已对 {target.name} 宣战")
 
@@ -368,3 +385,86 @@ class GameAPI:
         player.add_stress(-10)
         self.sim.world.push_log(f"{player.name} 举办了宴会")
         self.notify("举办宴会：威望+15，压力-10")
+
+    def _save(self) -> None:
+        """轻量快照：日期、玩家、金币/威望、省份 holder、军团。"""
+        w = self.sim.world
+        data = {
+            "date": [w.date.year, w.date.month, w.date.day],
+            "tick": w.tick,
+            "player_id": self.player_id,
+            "characters": {
+                str(c.id): {
+                    "gold": c.gold,
+                    "prestige": c.prestige,
+                    "piety": c.piety,
+                    "stress": c.stress,
+                    "health": c.health,
+                    "life": c.life.name,
+                    "held_titles": list(c.held_titles),
+                    "primary_title": c.primary_title,
+                    "is_ruler": c.is_ruler,
+                }
+                for c in w.characters.values()
+            },
+            "counties": {
+                str(c.id): {"holder": c.holder, "control": c.control, "development": c.development}
+                for c in w.map.iter()
+            },
+            "titles": {
+                str(t.id): {"holder": t.holder}
+                for t in w.titles.values()
+            },
+            "log": w.log[-100:],
+            "messages": self.messages[-20:],
+        }
+        self.save_path.parent.mkdir(parents=True, exist_ok=True)
+        self.save_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        self.notify(f"已存档 → {self.save_path.name}")
+
+    def _load(self) -> None:
+        if not self.save_path.exists():
+            raise ValueError("没有存档")
+        data = json.loads(self.save_path.read_text(encoding="utf-8"))
+        # 新开局再覆盖动态状态，保证 ID 一致
+        self.sim = GameSimulation()
+        w = self.sim.world
+        from ck_engine.core import GameDate
+        from ck_engine.world.character import LifeState
+
+        y, m, d = data["date"]
+        w.date = GameDate(y, m, d)
+        w.tick = int(data.get("tick", 0))
+        for cid, row in data.get("characters", {}).items():
+            c = w.character(int(cid))
+            if not c:
+                continue
+            c.gold = row["gold"]
+            c.prestige = row["prestige"]
+            c.piety = row.get("piety", c.piety)
+            c.stress = row.get("stress", 0)
+            c.health = row.get("health", c.health)
+            if row.get("life") == "DEAD":
+                c.life = LifeState.DEAD
+                c.is_ruler = False
+            else:
+                c.held_titles = list(row.get("held_titles", []))
+                c.primary_title = row.get("primary_title", c.primary_title)
+                c.is_ruler = bool(row.get("is_ruler", c.is_ruler))
+        for tid, row in data.get("titles", {}).items():
+            t = w.title(int(tid))
+            if t:
+                t.holder = row["holder"]
+        for cid, row in data.get("counties", {}).items():
+            county = w.map.get(int(cid))
+            if county:
+                county.holder = row["holder"]
+                county.control = row.get("control", county.control)
+                county.development = row.get("development", county.development)
+        w.log = list(data.get("log", []))
+        self.messages = list(data.get("messages", ["读档完成"]))
+        self.player_id = int(data.get("player_id", self._default_player()))
+        self._sync_player()
+        self.selected_county = None
+        self.selected_army = None
+        self.notify(f"已读档 ← {self.save_path.name}")

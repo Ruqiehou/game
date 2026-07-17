@@ -38,6 +38,7 @@ class GameSimulation:
         self.diplomacy = DiplomacySystem()
         self.councils = CouncilRegistry()
         self.realm_laws: Dict[int, RealmLaw] = {}
+        self.player_ids: set = set()
         self.bootstrap()
 
     def bootstrap(self) -> None:
@@ -64,6 +65,25 @@ class GameSimulation:
         for r in list(self.world.rulers()):
             self.ensure_council(r.id)
             self.realm_laws.setdefault(r.id, RealmLaw.feudal_default())
+
+    def _process_health(self) -> None:
+        deaths: List[int] = []
+        for c in list(self.world.alive_characters()):
+            age = c.age_at(self.world.date)
+            if age > 45:
+                c.health -= 0.002 * (age - 45)
+            if age > 60:
+                c.health -= 0.005
+            if 7 in c.traits:
+                c.health -= 0.01
+            if random.random() < 0.001:
+                c.health -= 0.5
+                c.add_stress(10)
+            if c.health <= 0:
+                deaths.append(c.id)
+        for did in deaths:
+            law = self.realm_laws.get(did)
+            self.world.on_death(did, law=law)
 
     def ensure_council(self, ruler: int) -> None:
         candidates = []
@@ -101,7 +121,6 @@ class GameSimulation:
 
     def tick_month(self) -> None:
         self.world.process_monthly_economy()
-        self.world.process_health()
         self.world.process_fertility()
 
         for rid in [r.id for r in self.world.rulers()]:
@@ -123,7 +142,11 @@ class GameSimulation:
         self.tick_factions()
         self.tick_schemes()
         actions = AiDirector.monthly_actions(
-            self.world, self.wars, self.diplomacy, self.schemes
+            self.world,
+            self.wars,
+            self.diplomacy,
+            self.schemes,
+            skip_ids=set(self.player_ids),
         )
         AiDirector.apply_actions(
             self.world, self.wars, self.diplomacy, self.schemes, actions
@@ -414,9 +437,7 @@ class GameSimulation:
                 cn = county.name if county else "?"
                 an = attacker.name if attacker else "?"
                 self.world.push_log(f"{an} 攻陷了 {cn}！")
-                if county:
-                    county.control = 30.0
-                    county.holder = ev.attacker
+                self.world.occupy_county(ev.county, ev.attacker)
                 for w in list(self.wars.active_wars()):
                     if w.involves(ev.attacker) and w.involves(ev.defender):
                         if w.is_attacker(ev.attacker):

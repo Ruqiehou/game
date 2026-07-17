@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CK 引擎 · 可操作地图</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">CK Map</div>
+      <div id="date" class="date">—</div>
+      <div id="player-summary" class="player-summary">—</div>
+      <div class="time-controls">
+        <button data-days="1">+1天</button>
+        <button data-days="7">+1周</button>
+        <button data-days="30">+1月</button>
+        <button data-days="90">+1季</button>
+        <button data-days="365">+1年</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="map-panel">
+        <svg id="map" viewBox="0 0 820 720" role="img" aria-label="游戏地图"></svg>
+        <div class="map-hint">点击省份查看 · 已选军团后再点省份可下令行军</div>
+      </section>
+
+      <aside class="side">
+        <section class="card">
+          <h2>玩家</h2>
+          <select id="player-select"></select>
+          <div id="player-detail" class="detail"></div>
+          <div class="btn-row">
+            <button id="btn-raise">征召军团</button>
+            <button id="btn-feast">宴会 (20金)</button>
+            <button id="btn-disband">解散军团</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>选中省份</h2>
+          <div id="county-detail" class="detail">点击地图选择省份</div>
+          <div class="btn-row">
+            <button id="btn-move">行军至此</button>
+            <button id="btn-war">对领主宣战</button>
+            <button id="btn-improve">改善关系 (10金)</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>战争</h2>
+          <div id="wars" class="list"></div>
+        </section>
+
+        <section class="card">
+          <h2>指令 / 日志</h2>
+          <div id="messages" class="list msg"></div>
+          <div id="log" class="list log"></div>
+          <div class="btn-row">
+            <button id="btn-save">存档</button>
+            <button id="btn-load">读档</button>
+            <button id="btn-new">新局</button>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

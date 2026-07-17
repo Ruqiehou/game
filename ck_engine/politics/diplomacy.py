@@ -155,6 +155,20 @@ class DiplomacySystem:
             return False
         return True
 
+    def are_allied(self, a: int, b: int) -> bool:
+        return self.flags(a, b).allied
+
+    def allies_of(self, who: int) -> List[int]:
+        out = []
+        for t in self.treaties:
+            if t.kind != TreatyKind.ALLIANCE:
+                continue
+            if t.a == who:
+                out.append(t.b)
+            elif t.b == who:
+                out.append(t.a)
+        return out
+
     def add_claim(
         self, claimant: int, title: int, county: Optional[int] = None, strength: int = 50
     ) -> None:

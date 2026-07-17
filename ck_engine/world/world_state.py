@@ -230,63 +230,102 @@ class World:
         c.opinion_cache[to] = max(-100, min(100, cur))
 
     # ---------- 继承 ----------
-    def find_heir(self, ruler: int) -> Optional[int]:
+    def _heir_rows(self, ids: List[int]) -> List[Tuple[int, Gender, int, bool]]:
+        rows = []
+        for cid in ids:
+            ch = self.character(cid)
+            if not ch:
+                continue
+            rows.append((ch.id, ch.gender, ch.birth.to_ordinal(), ch.is_alive()))
+        return rows
+
+    def find_heir(self, ruler: int, law: Optional[object] = None) -> Optional[int]:
         c = self.character(ruler)
         if not c:
             return None
-        sons = [
-            self.character(cid)
-            for cid in c.children
-            if self.character(cid)
-            and self.character(cid).is_alive()
-            and self.character(cid).gender == Gender.MALE
-        ]
-        sons = [s for s in sons if s]
-        sons.sort(key=lambda ch: ch.birth.to_ordinal())
-        if sons:
-            return sons[0].id
-        daughters = [
-            self.character(cid)
-            for cid in c.children
-            if self.character(cid)
-            and self.character(cid).is_alive()
-            and self.character(cid).gender == Gender.FEMALE
-        ]
-        daughters = [d for d in daughters if d]
-        daughters.sort(key=lambda ch: ch.birth.to_ordinal())
-        if daughters:
-            return daughters[0].id
+        children = self._heir_rows(list(c.children))
+        dynasty_ids: List[int] = []
         d = self.dynasties.get(c.dynasty)
         if d:
-            for m in d.members:
-                if m != ruler:
-                    ch = self.character(m)
-                    if ch and ch.is_alive():
-                        return ch.id
+            dynasty_ids = [m for m in d.members if m != ruler]
+        dynasty_members = self._heir_rows(dynasty_ids)
+
+        if law is not None and hasattr(law, "pick_heir"):
+            heir = law.pick_heir(children, dynasty_members)
+            if heir is not None:
+                return heir
+
+        # 默认：男长嗣 → 女长嗣 → 王朝成员
+        sons = [r for r in children if r[3] and r[1] == Gender.MALE]
+        sons.sort(key=lambda r: r[2])
+        if sons:
+            return sons[0][0]
+        daughters = [r for r in children if r[3] and r[1] == Gender.FEMALE]
+        daughters.sort(key=lambda r: r[2])
+        if daughters:
+            return daughters[0][0]
+        for r in dynasty_members:
+            if r[3]:
+                return r[0]
         return None
 
-    def on_death(self, who: int) -> None:
+    def on_death(self, who: int, law: Optional[object] = None) -> None:
         c = self.character(who)
         if not c or not c.is_alive():
             return
         name = c.name
         titles = list(c.held_titles)
-        heir = self.find_heir(who)
+        heir = self.find_heir(who, law=law)
         age = c.age_at(self.date)
         c.kill(self.date)
         self.push_log(f"{name} 去世，享年 {age}")
         if heir is not None:
             heir_c = self.character(heir)
             heir_name = heir_c.name if heir_c else "?"
-            for tid in titles:
-                self.grant_title(tid, heir)
+            # 分割继承：多继承人分伯爵领
+            if (
+                law is not None
+                and getattr(law, "partition_enabled", False)
+                and hasattr(law, "partition_titles")
+            ):
+                living_kids = [
+                    cid
+                    for cid in c.children
+                    if self.character(cid) and self.character(cid).is_alive()
+                ]
+                heirs = [heir] + [k for k in living_kids if k != heir][:3]
+                parts = law.partition_titles(titles, heirs)
+                for hid, tids in parts:
+                    for tid in tids:
+                        self.grant_title(tid, hid)
+            else:
+                for tid in titles:
+                    self.grant_title(tid, heir)
             self.push_log(f"{heir_name} 继承了 {name} 的遗产")
         else:
             for tid in titles:
                 t = self.title(tid)
                 if t:
                     t.clear_holder()
+                    for cid in t.counties:
+                        county = self.map.get(cid)
+                        if county:
+                            county.holder = NONE_ID
             self.push_log(f"{name} 绝嗣，头衔悬空")
+
+    def occupy_county(self, county_id: int, new_holder: int) -> bool:
+        """军事占领：同步伯爵领 holder 与对应 COUNTY 头衔。"""
+        county = self.map.get(county_id)
+        if not county:
+            return False
+        county.control = 30.0
+        county.holder = new_holder
+        tid = county.owner_title
+        if tid != NONE_ID:
+            t = self.title(tid)
+            if t and t.tier == TitleTier.COUNTY:
+                self.grant_title(tid, new_holder)
+        return True
 
     # ---------- 经济 ----------
     def monthly_income_of(self, ruler: int) -> float:

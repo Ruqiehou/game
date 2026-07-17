@@ -105,14 +105,14 @@ class AiDirector:
                                         )
                                     )
 
-            # 宣战
+            # 宣战（不对 skip 玩家乱宣也可，但允许；同盟/停战由 diplomacy 拦截）
             if (
                 not at_war
-                and profile.aggression > 0.5
-                and random.random() < profile.aggression * 0.18
+                and profile.aggression > 0.55
+                and random.random() < profile.aggression * 0.12
             ):
                 target = find_war_target(world, wars, diplomacy, ruler)
-                if target:
+                if target and target not in skip_ids:
                     cb = (
                         CasusBelli.RIVALRY
                         if diplomacy.flags(ruler, target).rival
@@ -238,6 +238,8 @@ class AiDirector:
                     continue
                 if not diplomacy.can_declare_war(act.owner, act.target, world.date.year):
                     continue
+                if diplomacy.are_allied(act.owner, act.target):
+                    continue
                 if any(
                     w.involves(act.owner) or w.involves(act.target)
                     for w in wars.active_wars()
@@ -257,6 +259,21 @@ class AiDirector:
                     f"{an} 对 {dn} 的{act.cb.name_zh()}",
                 )
                 diplomacy.set_at_war(act.owner, act.target, True)
+                # 同盟自动参战（攻方盟友加入进攻）
+                war = wars.war(wid)
+                if war:
+                    for ally in diplomacy.allies_of(act.owner):
+                        if ally != act.target and not war.involves(ally):
+                            from ck_engine.military.war import WarParticipant
+
+                            war.participants.append(
+                                WarParticipant(
+                                    character=ally,
+                                    is_attacker=True,
+                                    joined=world.date,
+                                )
+                            )
+                            diplomacy.set_at_war(ally, act.target, True)
                 world.push_log(f"宣战！{act.cb.name_zh()} (战争 {wid})")
             elif act.kind == "marry":
                 if world.marry(act.owner, act.target):
@@ -353,6 +370,8 @@ def find_war_target(
         if r.id == who:
             continue
         if not diplomacy.can_declare_war(who, r.id, world.date.year):
+            continue
+        if diplomacy.are_allied(who, r.id):
             continue
         if any(w.involves(r.id) for w in wars.active_wars()):
             continue
