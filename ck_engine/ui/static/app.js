@@ -39,8 +39,9 @@ function renderAll() {
   if (!state) return;
   document.getElementById("date").textContent = state.date;
   const p = state.player;
+  const exh = state.player_war_exhaustion != null ? ` · 战疲 ${state.player_war_exhaustion}` : "";
   document.getElementById("player-summary").textContent = p
-    ? `${p.name} · ${p.title} · 金 ${p.gold} · 威望 ${p.prestige} · 军 ${p.men}`
+    ? `${p.name} · ${p.title} · 金 ${p.gold} · 威望 ${p.prestige} · 军 ${p.men}${exh}`
     : "无玩家";
 
   const sel = document.getElementById("player-select");

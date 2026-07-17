@@ -58,14 +58,28 @@ class War:
 
     def can_white_peace(self, now: GameDate, atk_exh: float = 0.0, def_exh: float = 0.0) -> bool:
         """僵持或双方战争疲劳过高时可白和。"""
+        from ck_engine.core.balance import (
+            WHITE_PEACE_FATIGUE_SCORE,
+            WHITE_PEACE_FATIGUE_THRESHOLD,
+            WHITE_PEACE_MAX_MONTHS,
+            WHITE_PEACE_MAX_SCORE,
+            WHITE_PEACE_MIN_MONTHS,
+            WHITE_PEACE_STALEMATE_MONTHS,
+            WHITE_PEACE_STALEMATE_SCORE,
+        )
+
         months = self.months_elapsed(now)
-        if months < 12:
+        if months < WHITE_PEACE_MIN_MONTHS:
             return False
-        if abs(self.warscore) <= 15 and months >= 18:
+        if abs(self.warscore) <= WHITE_PEACE_STALEMATE_SCORE and months >= WHITE_PEACE_STALEMATE_MONTHS:
             return True
-        if abs(self.warscore) <= 25 and atk_exh >= 40 and def_exh >= 40:
+        if (
+            abs(self.warscore) <= WHITE_PEACE_FATIGUE_SCORE
+            and atk_exh >= WHITE_PEACE_FATIGUE_THRESHOLD
+            and def_exh >= WHITE_PEACE_FATIGUE_THRESHOLD
+        ):
             return True
-        if months >= 36 and abs(self.warscore) < 50:
+        if months >= WHITE_PEACE_MAX_MONTHS and abs(self.warscore) < WHITE_PEACE_MAX_SCORE:
             return True
         return False
 

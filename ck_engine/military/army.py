@@ -138,15 +138,23 @@ class Army:
 
     def apply_supply_tick(self, in_friendly: bool, winter: bool) -> None:
         """日补给：友方恢复，敌境消耗，冬季额外损耗。"""
+        from ck_engine.core.balance import (
+            MORALE_DRAIN_LOW_SUPPLY,
+            MORALE_RECOVER_FRIENDLY,
+            SUPPLY_DRAIN_ENEMY,
+            SUPPLY_DRAIN_WINTER,
+            SUPPLY_LOW_THRESHOLD,
+            SUPPLY_RECOVER_FRIENDLY,
+        )
+
         if in_friendly:
-            self.supply = min(100.0, self.supply + 2.5)
-            self.morale = min(100.0, self.morale + 0.3)
+            self.supply = min(100.0, self.supply + SUPPLY_RECOVER_FRIENDLY)
+            self.morale = min(100.0, self.morale + MORALE_RECOVER_FRIENDLY)
         else:
-            drain = 1.2 if winter else 0.7
+            drain = SUPPLY_DRAIN_WINTER if winter else SUPPLY_DRAIN_ENEMY
             self.supply = max(0.0, self.supply - drain)
-            if self.supply < 25.0:
-                self.morale = max(5.0, self.morale - 0.8)
-            # 补给耗尽时缓慢非战斗减员
+            if self.supply < SUPPLY_LOW_THRESHOLD:
+                self.morale = max(5.0, self.morale - MORALE_DRAIN_LOW_SUPPLY)
             if self.supply <= 0.0 and self.stacks:
                 for s in self.stacks:
                     if s.men > 0:

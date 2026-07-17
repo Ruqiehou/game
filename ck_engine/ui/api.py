@@ -212,11 +212,14 @@ class GameAPI:
                 }
             )
 
+        player_exh = round(self.sim.diplomacy.war_exhaustion.get(self.player_id, 0.0), 1)
+
         return {
             "date": str(w.date),
             "season": w.date.season().name,
             "tick": w.tick,
             "player": player_info,
+            "player_war_exhaustion": player_exh,
             "playable": playable,
             "counties": counties,
             "edges": edge_list,

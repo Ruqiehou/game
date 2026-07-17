@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import Dict, List
 
 from ck_engine.ai import AiDirector, AiPersonality
-from ck_engine.core import NONE_ID
+from ck_engine.core import NONE_ID, Season
 from ck_engine.events import EventEngine
 from ck_engine.game.scenario import Scenario1066
 from ck_engine.military import (
@@ -422,13 +422,10 @@ class GameSimulation:
         def_m = (self.world.effective_attrs(army_b.commander) or type("A", (), {"martial": 8})()).martial
         county = self.world.map.get(army_a.location)
         width = county.terrain.combat_width() if county else 1.0
+        from ck_engine.core.balance import SEASON_COMBAT
+
         season = self.world.date.season()
-        season_mod = {
-            Season.SPRING: 1.0,
-            Season.SUMMER: 1.05,
-            Season.AUTUMN: 0.92,
-            Season.WINTER: 0.8,
-        }.get(season, 1.0)
+        season_mod = SEASON_COMBAT.get(season.name, 1.0)
         result = BattleSimulator.resolve(
             army_a, army_b, atk_m, def_m, width, season_mod=season_mod
         )

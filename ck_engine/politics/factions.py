@@ -100,14 +100,22 @@ class FactionSystem:
     def dissolve(self, faction_id: int) -> None:
         self.factions.pop(faction_id, None)
 
-    def appease(self, faction_id: int, amount: float = 25.0) -> bool:
+    def appease(self, faction_id: int, amount: float | None = None) -> bool:
         """君主安抚：降低不满；过低则解散。"""
+        from ck_engine.core.balance import (
+            FACTION_APPEASE_DEFAULT,
+            FACTION_DISSOLVE_DISCONTENT,
+            FACTION_DISSOLVE_POWER,
+        )
+
+        if amount is None:
+            amount = FACTION_APPEASE_DEFAULT
         f = self.factions.get(faction_id)
         if not f:
             return False
         f.discontent = max(0.0, f.discontent - amount)
         f.ultimatum_sent = False
-        if f.discontent <= 5.0 and f.power < 40.0:
+        if f.discontent <= FACTION_DISSOLVE_DISCONTENT and f.power < FACTION_DISSOLVE_POWER:
             self.dissolve(faction_id)
         return True
 
