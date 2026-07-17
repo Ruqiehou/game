@@ -37,7 +37,9 @@ async function act(payload) {
 
 function renderAll() {
   if (!state) return;
-  document.getElementById("date").textContent = state.date;
+  const seasonZh = { SPRING: "春", SUMMER: "夏", AUTUMN: "秋", WINTER: "冬" };
+  document.getElementById("date").textContent =
+    state.date + (state.season ? ` · ${seasonZh[state.season] || state.season}` : "");
   const p = state.player;
   const exh = state.player_war_exhaustion != null ? ` · 战疲 ${state.player_war_exhaustion}` : "";
   document.getElementById("player-summary").textContent = p

@@ -142,5 +142,18 @@ class TestSeasonHelper(unittest.TestCase):
         self.assertEqual(GameDate(1066, 6, 1).season(), Season.SUMMER)
 
 
+class TestScenarioJson(unittest.TestCase):
+    def test_load_1066(self):
+        from ck_engine.game.scenario import Scenario1066
+
+        w = Scenario1066.build()
+        self.assertEqual(str(w.date), "1066-01-01")
+        self.assertEqual(sum(1 for _ in w.map.iter()), 14)
+        self.assertGreaterEqual(len(list(w.rulers())), 4)
+        names = {r.name for r in w.rulers()}
+        self.assertIn("哈罗德·戈德温森", names)
+        self.assertIn("威廉·征服者", names)
+
+
 if __name__ == "__main__":
     unittest.main()
