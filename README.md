@@ -1,6 +1,104 @@
-# game
-This repo is used by me to practise rust and other languages .so i do not konw what code will be upload.All github users should becareful to clone this repo.Thankyou!
-----Ruqiehou
-7.15.2026
+# CK-Style Grand Strategy Engine
 
+Python 实现的十字军之王风格大战略模拟引擎。  
+默认场景：**1066 英格兰**（诺曼征服前夜）。
 
+作者：Ruqiehou  
+更新：2026-07-15
+
+---
+
+## 运行环境
+
+- Python 3.10+
+- 标准库即可（无第三方依赖）
+
+---
+
+## 快速开始
+
+在项目根目录执行：
+
+```bash
+python run_game.py
+```
+
+或：
+
+```bash
+python -m ck_engine.game.main
+```
+
+控制台会加载 1066 场景，自动模拟约 2 年，并输出：
+
+- 统治者状态
+- 战争 / 派系 / 条约 / 阴谋
+- 最近日志
+- 王朝概况
+
+---
+
+## 项目结构
+
+```text
+game/
+├── run_game.py              # 控制台入口
+├── README.md
+└── ck_engine/
+    ├── core/                # 日期、属性、特质
+    ├── world/               # 人物、地图、头衔、王朝、经济/继承
+    ├── politics/            # 外交、内阁、派系、法律、阴谋
+    ├── military/            # 军团、战斗、围城、战争
+    ├── events/              # 事件引擎
+    ├── ai/                  # AI 性格与月度决策
+    ├── game/                # 场景、模拟主循环、CLI 入口
+    │   ├── scenario.py      # 1066 场景
+    │   ├── simulation.py    # 日/月推进
+    │   └── main.py
+    └── ui/                  # 可操作地图 UI（进行中）
+        ├── api.py           # 状态序列化与玩家操作 API
+        └── map_layout.py    # 省份坐标布局
+```
+
+---
+
+## 已实现系统
+
+| 模块 | 内容 |
+|------|------|
+| 世界 | 人物、王朝、头衔、伯爵领邻接、税收/征召、生育、死亡与继承 |
+| 政治 | 外交（同盟/停战/宣称）、内阁、派系、王权法律、阴谋 |
+| 军事 | 征召、行军、战斗、围城、战争分数与和约 |
+| 事件 | 月度触发事件与 AI 自动决议 |
+| AI | 宣战、结盟、婚姻、宴会、发展、阴谋等 |
+| 场景 | 14 个省份、英格兰/诺曼底主要贵族 |
+
+---
+
+## 可操作地图 UI（进行中）
+
+`ck_engine/ui/` 提供地图交互基础：
+
+- `map_layout.py`：1066 省份固定坐标与多边形
+- `api.py`：`GameAPI` 快照与指令接口
+
+当前支持的操作意图包括：
+
+- 切换玩家角色
+- 推进时间（日/月）
+- 选中省份 / 军团
+- 征召、行军、解散军团
+- 宣战、改善关系、举办宴会
+- 新开一局
+
+网页服务器与前端页面仍在接入中。控制台模拟可直接用上面的 `run_game.py`。
+
+---
+
+## 开发说明
+
+- 主循环：`ck_engine/game/simulation.py`
+- 场景数据：`ck_engine/game/scenario.py`
+- 状态读写 API：`ck_engine/ui/api.py`
+
+本仓库以练习与原型开发为主，接口与数据格式可能随时调整。
