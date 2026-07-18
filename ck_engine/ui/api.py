@@ -111,6 +111,20 @@ class GameAPI:
             loc = w.map.get(a.location)
             owner = w.character(a.owner)
             layout = layout_for(loc.name) if loc else {"cx": 0, "cy": 0}
+            supply = round(a.supply, 1)
+            in_enemy = False
+            if loc:
+                for war in self.sim.wars.active_wars():
+                    if not war.involves(a.owner):
+                        continue
+                    enemies = {
+                        p.character
+                        for p in war.participants
+                        if war.is_attacker(p.character) != war.is_attacker(a.owner)
+                    }
+                    if loc.holder in enemies:
+                        in_enemy = True
+                        break
             armies.append(
                 {
                     "id": a.id,
@@ -122,6 +136,10 @@ class GameAPI:
                     "men": a.total_men(),
                     "status": a.status.name,
                     "morale": round(a.morale, 1),
+                    "supply": supply,
+                    "supply_low": supply < SUPPLY_LOW_THRESHOLD,
+                    "supply_slow": supply < SUPPLY_MOVE_SLOW_THRESHOLD,
+                    "in_enemy": in_enemy,
                     "cx": layout["cx"],
                     "cy": layout["cy"] - 18,
                     "is_player": a.owner == self.player_id,
@@ -133,6 +151,14 @@ class GameAPI:
         for war in self.sim.wars.wars.values():
             atk = w.character(war.attacker_primary)
             dfd = w.character(war.defender_primary)
+            months = war.months_elapsed(w.date) if war.active else 0
+            atk_exh = self.sim.diplomacy.war_exhaustion.get(war.attacker_primary, 0.0)
+            def_exh = self.sim.diplomacy.war_exhaustion.get(war.defender_primary, 0.0)
+            can_wp = False
+            if war.active and war.involves(self.player_id):
+                can_wp = war.can_white_peace(w.date, atk_exh, def_exh) or (
+                    months >= 12 or (months >= 6 and abs(war.warscore) <= 40)
+                )
             wars.append(
                 {
                     "id": war.id,
@@ -143,6 +169,8 @@ class GameAPI:
                     "attacker": atk.name if atk else "?",
                     "defender": dfd.name if dfd else "?",
                     "involves_player": war.involves(self.player_id),
+                    "months": months,
+                    "can_white_peace": can_wp,
                 }
             )
 
