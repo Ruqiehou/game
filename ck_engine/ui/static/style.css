@@ -86,12 +86,13 @@ button:active { transform: translateY(1px); }
 }
 .edge { stroke: rgba(180,200,220,.18); stroke-width: 1.2; pointer-events: none; }
 .sea-label { fill: #7eb6d6; font-size: 14px; letter-spacing: .2em; opacity: .7; }
-.army {
-  cursor: pointer;
-}
+.army { cursor: pointer; transition: filter .12s; }
+.army:hover { filter: brightness(1.25); }
 .army circle { stroke: #0b1018; stroke-width: 1.5; }
 .army.player circle { stroke: var(--accent); stroke-width: 2.5; }
 .army.selected circle { stroke: #fff; stroke-width: 3; }
+.army.low-supply circle { stroke: #ff8a80; stroke-width: 2; }
+.army.in-enemy circle { stroke: #ffb74d; stroke-width: 2; }
 .army text {
   fill: #fff; font-size: 10px; text-anchor: middle;
   pointer-events: none; font-weight: 700;

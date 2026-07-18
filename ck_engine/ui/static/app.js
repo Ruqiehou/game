@@ -116,16 +116,28 @@ function renderMap() {
     }
   }
 
-  for (const a of state.armies || []) {
-    const cls = ["army", a.is_player ? "player" : "", selectedArmy === a.id ? "selected" : ""]
+for (const a of state.armies || []) {
+    const cls = [
+      "army",
+      a.is_player ? "player" : "",
+      selectedArmy === a.id ? "selected" : "",
+      a.supply_low ? "low-supply" : "",
+      a.in_enemy ? "in-enemy" : "",
+    ]
       .filter(Boolean)
       .join(" ");
-    const fill = a.is_player ? "#d4a017" : "#3d8bfd";
+    let fill = a.is_player ? "#d4a017" : "#3d8bfd";
+    if (a.supply_low) fill = "#c44b3c";
+    else if (a.in_enemy) fill = a.is_player ? "#c47a10" : "#2f6fc4";
     const menK = a.men >= 1000 ? (a.men / 1000).toFixed(1) + "k" : String(a.men);
+    const sup = Math.max(0, Math.min(100, a.supply != null ? a.supply : 100));
+    const barColor = sup < 25 ? "#e35d6a" : sup < 50 ? "#e0a84a" : "#3ecf8e";
     parts.push(`
       <g class="${cls}" data-army="${a.id}" transform="translate(${a.cx},${a.cy})">
-        <circle r="12" fill="${fill}"/>
+        <circle r="12" fill="${fill}" stroke="${a.in_enemy ? "#ff8a80" : "none"}" stroke-width="1.5"/>
         <text y="4">${menK}</text>
+        <rect x="-14" y="14" width="28" height="3.5" fill="#000" opacity="0.45" rx="1"/>
+        <rect x="-14" y="14" width="${(28 * sup) / 100}" height="3.5" fill="${barColor}" rx="1"/>
       </g>
     `);
   }
