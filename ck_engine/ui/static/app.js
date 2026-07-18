@@ -173,7 +173,11 @@ function renderCounty() {
     <div class="row"><span class="muted">征召 / 税 / 要塞</span><span>${c.levies} / ${c.tax} / ${c.fort}</span></div>
     <div class="row"><span class="muted">驻军标记</span><span>${(c.armies || []).length} 支</span></div>
     <div class="muted" style="margin-top:6px">当前军团: ${
-      army ? `${army.name} (${army.men}人 @ ${army.location_name})` : "未选择"
+      army
+        ? `${army.name} (${army.men}人 @ ${army.location_name} · 补给 ${army.supply ?? "—"} · 士气 ${army.morale ?? "—"}${
+            army.in_enemy ? " · 敌境" : ""
+          }${army.supply_low ? " · 低补给" : ""})`
+        : "未选择"
     }</div>
   `;
 }
@@ -186,13 +190,23 @@ function renderWars() {
     return;
   }
   box.innerHTML = wars
-    .map(
-      (w) =>
-        `<div><span class="tag war">${w.cb}</span>${w.attacker} vs ${w.defender} · 分 ${w.warscore}${
-          w.involves_player ? " · 你" : ""
-        }</div>`
-    )
+    .map((w) => {
+      const wpBtn =
+        w.involves_player && w.can_white_peace
+          ? `<button class="mini" data-white-peace="${w.id}">白和</button>`
+          : w.involves_player
+            ? `<span class="muted"> · ${w.months || 0}月</span>`
+            : "";
+      return `<div class="list-row"><span><span class="tag war">${w.cb}</span>${w.attacker} vs ${w.defender} · 分 ${w.warscore}${
+        w.involves_player ? " · 你" : ""
+      }</span>${wpBtn}</div>`;
+    })
     .join("");
+  box.querySelectorAll("[data-white-peace]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      act({ action: "white_peace", war_id: Number(btn.dataset.whitePeace) });
+    });
+  });
 }
 
 function renderLists() {
