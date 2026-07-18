@@ -231,8 +231,9 @@ class GameAPI:
             "messages": self.messages[-12:],
             "selected_county": self.selected_county,
             "selected_army": self.selected_army,
-            "sea": SEA_BAND,
-            "viewbox": "0 0 820 720",
+            "sea": sea_band(),
+            "viewbox": viewbox(),
+            "supply_low_threshold": SUPPLY_LOW_THRESHOLD,
         }
 
     def _holder_color(self, holder_id: int) -> str:

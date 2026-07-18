@@ -1,102 +1,63 @@
-"""1066 场景固定地图布局（逻辑坐标，前端再缩放）。"""
+"""地图布局：从 data/map_layouts 加载，支持多场景。"""
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Dict, List, Tuple
 
-# 逻辑画布 0..1000 x 0..700
-# 英格兰在上，诺曼底在海峡以南
-
-COUNTY_LAYOUT: Dict[str, dict] = {
-    "诺森布里亚": {
-        "cx": 420,
-        "cy": 70,
-        "points": [(340, 20), (500, 20), (520, 110), (360, 120)],
-    },
-    "约克": {
-        "cx": 430,
-        "cy": 160,
-        "points": [(360, 120), (520, 110), (540, 200), (350, 210)],
-    },
-    "林肯": {
-        "cx": 560,
-        "cy": 210,
-        "points": [(520, 150), (640, 150), (650, 260), (530, 270)],
-    },
-    "麦西亚": {
-        "cx": 380,
-        "cy": 250,
-        "points": [(280, 200), (470, 200), (480, 310), (270, 320)],
-    },
-    "东盎格利亚": {
-        "cx": 620,
-        "cy": 280,
-        "points": [(540, 220), (720, 220), (730, 330), (550, 340)],
-    },
-    "米德尔塞克斯": {
-        "cx": 480,
-        "cy": 330,
-        "points": [(400, 290), (560, 290), (570, 380), (390, 380)],
-    },
-    "肯特": {
-        "cx": 620,
-        "cy": 360,
-        "points": [(560, 320), (720, 320), (730, 410), (550, 410)],
-    },
-    "威塞克斯": {
-        "cx": 340,
-        "cy": 360,
-        "points": [(240, 310), (420, 310), (430, 420), (230, 420)],
-    },
-    "苏塞克斯": {
-        "cx": 480,
-        "cy": 410,
-        "points": [(390, 380), (570, 380), (580, 460), (380, 460)],
-    },
-    "康沃尔": {
-        "cx": 180,
-        "cy": 400,
-        "points": [(80, 350), (240, 350), (250, 460), (70, 460)],
-    },
-    # 海峡
-    "诺曼底": {
-        "cx": 520,
-        "cy": 540,
-        "points": [(430, 500), (620, 500), (630, 580), (420, 580)],
-    },
-    "鲁昂": {
-        "cx": 650,
-        "cy": 560,
-        "points": [(600, 520), (740, 520), (750, 610), (590, 610)],
-    },
-    "卡昂": {
-        "cx": 430,
-        "cy": 600,
-        "points": [(340, 560), (520, 560), (530, 650), (330, 650)],
-    },
-    "贝叶": {
-        "cx": 580,
-        "cy": 620,
-        "points": [(520, 580), (660, 580), (670, 670), (510, 670)],
-    },
-}
-
-SEA_BAND = {
-    "y": 475,
-    "label": "英吉利海峡",
-}
+_LAYOUT_DIR = Path(__file__).resolve().parents[1] / "data" / "map_layouts"
+_CACHE: Dict[str, dict] = {}
 
 
-def layout_for(name: str) -> dict:
-    if name in COUNTY_LAYOUT:
-        return COUNTY_LAYOUT[name]
-    # 兜底：按名称哈希散落
+def _load(scenario: str = "1066") -> dict:
+    if scenario in _CACHE:
+        return _CACHE[scenario]
+    path = _LAYOUT_DIR / f"{scenario}.json"
+    if not path.exists():
+        data = {"viewbox": "0 0 820 720", "sea": {"y": 475, "label": ""}, "counties": {}}
+    else:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    # 规范化 points 为 tuple 列表
+    counties: Dict[str, dict] = {}
+    for name, row in data.get("counties", {}).items():
+        pts = [tuple(p) for p in row.get("points", [])]
+        counties[name] = {
+            "cx": float(row["cx"]),
+            "cy": float(row["cy"]),
+            "points": pts,
+        }
+    packed = {
+        "viewbox": data.get("viewbox", "0 0 820 720"),
+        "sea": data.get("sea", {"y": 475, "label": ""}),
+        "counties": counties,
+    }
+    _CACHE[scenario] = packed
+    return packed
+
+
+def layout_for(name: str, scenario: str = "1066") -> dict:
+    data = _load(scenario)
+    if name in data["counties"]:
+        return data["counties"][name]
     h = abs(hash(name)) % 800
     return {
         "cx": 100 + h % 700,
         "cy": 80 + (h // 7) % 500,
         "points": _box(100 + h % 700, 80 + (h // 7) % 500, 70, 50),
     }
+
+
+def sea_band(scenario: str = "1066") -> dict:
+    return dict(_load(scenario)["sea"])
+
+
+def viewbox(scenario: str = "1066") -> str:
+    return str(_load(scenario)["viewbox"])
+
+
+# 兼容旧导入
+SEA_BAND = sea_band()
 
 
 def _box(cx: float, cy: float, w: float, h: float) -> List[Tuple[float, float]]:
@@ -110,3 +71,8 @@ def _box(cx: float, cy: float, w: float, h: float) -> List[Tuple[float, float]]:
 
 def points_to_svg(points: List[Tuple[float, float]]) -> str:
     return " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+
+
+def reload_layouts() -> None:
+    """测试/热更新用。"""
+    _CACHE.clear()
