@@ -330,9 +330,11 @@ class GameAPI:
             elif kind == "white_peace":
                 self._white_peace(int(payload["war_id"]))
             elif kind == "save":
-                self._save()
+                self._save(payload.get("name"))
             elif kind == "load":
-                self._load()
+                self._load(payload.get("name"))
+            elif kind == "delete_save":
+                self._delete_save(str(payload["name"]))
             elif kind == "new_game":
                 self.sim = GameSimulation()
                 self.player_id = self._default_player()

@@ -245,6 +245,38 @@ function renderFactions() {
   });
 }
 
+function renderSaves() {
+  const box = document.getElementById("saves");
+  if (!box) return;
+  const saves = state.saves || [];
+  if (!saves.length) {
+    selectedSave = null;
+    box.innerHTML = `<div class="muted">暂无存档</div>`;
+    return;
+  }
+  if (!selectedSave || !saves.some((s) => s.name === selectedSave)) {
+    selectedSave = saves[0].name;
+  }
+  box.innerHTML = saves
+    .map((s) => {
+      const cls = s.name === selectedSave ? "save-item selected" : "save-item";
+      const date = s.date || "未知日期";
+      const broken = s.broken ? ' <span class="tag war">损坏</span>' : "";
+      return `<div class="${cls}" data-save="${escapeHtml(s.name)}"><strong>${escapeHtml(
+        s.name
+      )}</strong>${broken}<br><span class="muted">${date} · ${Math.ceil((s.size || 0) / 1024)}KB</span></div>`;
+    })
+    .join("");
+  box.querySelectorAll("[data-save]").forEach((el) => {
+    el.addEventListener("click", () => {
+      selectedSave = el.dataset.save;
+      renderSaves();
+      const input = document.getElementById("save-name");
+      if (input) input.value = selectedSave || "";
+    });
+  });
+}
+
 function renderLists() {
   document.getElementById("messages").innerHTML = (state.messages || [])
     .slice()
@@ -297,8 +329,19 @@ function bind() {
     if (!c || !c.holder_id) return alert("该省无领主");
     act({ action: "improve_relations", target_id: c.holder_id });
   });
-  document.getElementById("btn-save").addEventListener("click", () => act({ action: "save" }));
-  document.getElementById("btn-load").addEventListener("click", () => act({ action: "load" }));
+  document.getElementById("btn-save").addEventListener("click", () => {
+    const name = document.getElementById("save-name").value.trim() || undefined;
+    act({ action: "save", name });
+  });
+  document.getElementById("btn-load").addEventListener("click", () => {
+    if (!selectedSave) return alert("请先选择存档");
+    act({ action: "load", name: selectedSave });
+  });
+  document.getElementById("btn-delete-save").addEventListener("click", () => {
+    if (!selectedSave) return alert("请先选择存档");
+    if (selectedSave === "autosave") return alert("自动存档不能删除");
+    if (confirm(`删除存档 ${selectedSave}？`)) act({ action: "delete_save", name: selectedSave });
+  });
   document.getElementById("btn-new").addEventListener("click", () => {
     if (confirm("开始新局？")) act({ action: "new_game" });
   });
