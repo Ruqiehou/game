@@ -5,6 +5,7 @@ from enum import IntEnum
 from typing import List
 
 from ck_engine.core import NONE_ID
+from ck_engine.politics.laws import RealmLaw
 
 
 class TitleTier(IntEnum):
@@ -39,6 +40,7 @@ class Title:
     counties: List[int] = field(default_factory=list)
     creation_cost: float = 0.0
     destroyable: bool = False
+    realm_law: RealmLaw = field(default_factory=RealmLaw.feudal_default)
 
     @staticmethod
     def new(title_id: int, name: str, tier: TitleTier) -> Title:

@@ -354,7 +354,13 @@ class GameSimulation:
                 kind = o.scheme_kind
                 if kind == SchemeKind.MURDER:
                     self.world.push_log(f"阴谋成功：{on} 暗杀了 {tn}！")
-                    self.world.on_death(o.target)
+                    target = self.world.character(o.target)
+                    law = None
+                    if target and target.primary_title != NONE_ID:
+                        t = self.world.title(target.primary_title)
+                        if t:
+                            law = t.realm_law
+                    self.world.on_death(o.target, law=law)
                     if owner:
                         owner.add_stress(20)
                         owner.add_prestige(-15)

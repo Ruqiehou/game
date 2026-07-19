@@ -148,3 +148,4 @@ button.mini:hover { background: #35507a; }
 }
 .tag.war { background: #5a2430; color: #ffb4bc; }
 .tag.ok { background: #1f4a38; color: #9ef0c7; }
+.law-btn.selected { background: #35507a; border-color: var(--accent); }

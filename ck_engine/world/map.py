@@ -85,6 +85,17 @@ class County:
         base = self.levies * (1.0 + self.development * 0.01)
         return int(base * (self.control / 100.0))
 
+    def upkeep(self) -> float:
+        cost = 0.0
+        for b in self.buildings:
+            if b == "城堡":
+                cost += 0.5
+            elif b == "市场":
+                cost += 0.3
+            elif b == "庄园":
+                cost += 0.2
+        return cost
+
 
 @dataclass
 class MapGraph:

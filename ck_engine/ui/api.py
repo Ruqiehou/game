@@ -13,6 +13,7 @@ from ck_engine.core import NONE_ID
 from ck_engine.game.simulation import GameSimulation
 from ck_engine.military.army import ArmyStatus, UnitType
 from ck_engine.politics.diplomacy import CasusBelli
+from ck_engine.politics.laws import CrownAuthority, GenderLaw, SuccessionLaw
 from ck_engine.core.balance import (
     FACTION_APPEASE_GOLD,
     FACTION_APPEASE_PLAYER,
@@ -230,6 +231,7 @@ class GameAPI:
                 },
                 "income": round(w.monthly_income_of(player.id), 1),
                 "men": self.sim.wars.total_men_of(player.id),
+                "laws": self._player_laws(),
             }
 
         playable = [
@@ -359,6 +361,12 @@ class GameAPI:
                 self.selected_county = None
                 self.selected_army = None
                 self.messages = ["新局开始。"]
+            elif kind == "set_succession_law":
+                self._set_succession_law(payload.get("law"))
+            elif kind == "set_crown_authority":
+                self._set_crown_authority(int(payload.get("level", 0)))
+            elif kind == "set_gender_law":
+                self._set_gender_law(payload.get("law"))
             else:
                 self.notify(f"未知操作: {kind}")
         except Exception as e:  # noqa: BLE001 — 返回给前端
@@ -368,6 +376,70 @@ class GameAPI:
     def _name(self, cid: int) -> str:
         c = self.sim.world.character(cid)
         return c.name if c else "?"
+
+    def _player_laws(self) -> Dict[str, Any]:
+        w = self.sim.world
+        player = w.character(self.player_id)
+        if not player or player.primary_title == NONE_ID:
+            return {
+                "succession": None,
+                "crown_authority": None,
+                "gender_law": None,
+            }
+        title = w.title(player.primary_title)
+        if not title:
+            return {
+                "succession": None,
+                "crown_authority": None,
+                "gender_law": None,
+            }
+        law = title.realm_law
+        return {
+            "succession": law.succession.name,
+            "crown_authority": law.crown_authority.value,
+            "gender_law": law.gender_law.name,
+        }
+
+    def _set_succession_law(self, law_name: Any) -> None:
+        if law_name is None:
+            raise ValueError("缺少 law")
+        try:
+            new_law = SuccessionLaw[law_name]
+        except KeyError:
+            raise ValueError(f"未知继承法: {law_name}")
+        title = self._player_title()
+        title.realm_law.succession = new_law
+        self.notify(f"继承法已改为：{new_law.name_zh()}")
+
+    def _set_crown_authority(self, level: int) -> None:
+        try:
+            ca = CrownAuthority(level)
+        except ValueError:
+            raise ValueError(f"未知王权等级: {level}")
+        title = self._player_title()
+        title.realm_law.crown_authority = ca
+        self.notify(f"王权已改为：{ca.name_zh()}")
+
+    def _set_gender_law(self, law_name: Any) -> None:
+        if law_name is None:
+            raise ValueError("缺少 law")
+        try:
+            new_law = GenderLaw[law_name]
+        except KeyError:
+            raise ValueError(f"未知性别法: {law_name}")
+        title = self._player_title()
+        title.realm_law.gender_law = new_law
+        self.notify(f"性别法已改为：{new_law.name_zh()}")
+
+    def _player_title(self) -> Any:
+        w = self.sim.world
+        player = w.character(self.player_id)
+        if not player or player.primary_title == NONE_ID:
+            raise ValueError("玩家无主头衔")
+        title = w.title(player.primary_title)
+        if not title:
+            raise ValueError("主头衔不存在")
+        return title
 
     def _raise_army(self, county_id: int) -> None:
         county = self.sim.world.map.get(county_id)

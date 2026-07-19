@@ -376,13 +376,42 @@ class World:
         attrs = self.effective_attrs(ruler)
         if attrs:
             income *= 1.0 + (attrs.stewardship - 8) * 0.03
+        title = self.title(c.primary_title)
+        if title:
+            income *= 1.0 + title.realm_law.crown_authority.tax_bonus()
         return income
 
     def process_monthly_economy(self) -> None:
-        for r in list(self.rulers()):
-            income = self.monthly_income_of(r.id)
-            r.add_gold(income)
-            r.add_prestige(1.0)
+        net_income: Dict[int, float] = {}
+        for c in list(self.alive_characters()):
+            income = self.monthly_income_of(c.id)
+            for tid in c.held_titles:
+                t = self.title(tid)
+                if not t:
+                    continue
+                for cid in t.counties:
+                    county = self.map.get(cid)
+                    if county:
+                        income -= county.upkeep()
+            net_income[c.id] = income
+
+        # 封臣缴税：按 de facto 层级上缴 10%
+        for t in self.titles.values():
+            if t.de_facto_liege != NONE_ID and t.holder != NONE_ID:
+                liege_t = self.title(t.de_facto_liege)
+                if liege_t and liege_t.holder != NONE_ID:
+                    tax = net_income.get(t.holder, 0.0) * 0.1
+                    net_income[liege_t.holder] = net_income.get(liege_t.holder, 0.0) + tax
+                    net_income[t.holder] = net_income.get(t.holder, 0.0) - tax
+
+        for cid, income in net_income.items():
+            c = self.character(cid)
+            if not c:
+                continue
+            c.add_gold(income)
+            if income > 0:
+                c.add_prestige(1.0)
+
         for county in self.map.counties.values():
             if county.control > 80 and county.development < county.terrain.development_cap():
                 if random.random() < 0.05:
@@ -410,7 +439,13 @@ class World:
             if c.health <= 0:
                 deaths.append(c.id)
         for did in deaths:
-            self.on_death(did)
+            c = self.character(did)
+            law = None
+            if c and c.primary_title != NONE_ID:
+                t = self.title(c.primary_title)
+                if t:
+                    law = t.realm_law
+            self.on_death(did, law=law)
 
     def process_fertility(self) -> None:
         couples: List[Tuple[int, int]] = []

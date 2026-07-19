@@ -70,10 +70,12 @@ function renderAll() {
     `
     : "";
 
-  renderMap();
+ renderMap();
   renderCounty();
   renderWars();
   renderFactions();
+  renderLaws();
+  renderSaves();
   renderLists();
 }
 
@@ -241,6 +243,63 @@ function renderFactions() {
   box.querySelectorAll("[data-appease]").forEach((btn) => {
     btn.addEventListener("click", () => {
       act({ action: "appease_faction", faction_id: Number(btn.dataset.appease) });
+    });
+  });
+}
+
+function renderLaws() {
+  const box = document.getElementById("laws");
+  if (!box) return;
+  const p = state.player;
+  const laws = p && p.laws ? p.laws : null;
+  if (!laws) {
+    box.innerHTML = `<div class="muted">无头衔，无法改法</div>`;
+    return;
+  }
+  const successionOptions = [
+    ["PRIMOGENITURE", "长子继承"],
+    ["CONFEDERATE_PARTITION", "联邦分割"],
+    ["ELECTIVE", "选举君主"],
+    ["HOUSE_SENIORITY", "家族长老"],
+    ["ULTIMOGENITURE", "幼子继承"],
+  ];
+  const crownOptions = [
+    [0, "自治王权"],
+    [1, "有限王权"],
+    [2, "高度王权"],
+    [3, "绝对王权"],
+  ];
+  const genderOptions = [
+    ["AGNATIC", "男系继承"],
+    ["AGNATIC_COGNATIC", "男系优先"],
+    ["ABSOLUTE_COGNATIC", "绝对双系"],
+    ["ENATIC", "女系继承"],
+  ];
+  const pick = (opts, current) =>
+    opts
+      .map(
+        ([val, label]) =>
+          `<button class="mini law-btn" data-law="${val}" data-kind="${
+            opts === successionOptions
+              ? "succession"
+              : opts === crownOptions
+                ? "crown"
+                : "gender"
+          }">${label}${String(current) === String(val) ? " ✓" : ""}</button>`
+      )
+      .join(" ");
+  box.innerHTML = `
+    <div class="row"><span class="muted">继承法</span><span>${pick(successionOptions, laws.succession)}</span></div>
+    <div class="row"><span class="muted">王权</span><span>${pick(crownOptions, laws.crown_authority)}</span></div>
+    <div class="row"><span class="muted">性别法</span><span>${pick(genderOptions, laws.gender_law)}</span></div>
+  `;
+  box.querySelectorAll(".law-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const kind = btn.dataset.kind;
+      const val = btn.dataset.law;
+      if (kind === "succession") act({ action: "set_succession_law", law: val });
+      else if (kind === "crown") act({ action: "set_crown_authority", level: Number(val) });
+      else if (kind === "gender") act({ action: "set_gender_law", law: val });
     });
   });
 }
