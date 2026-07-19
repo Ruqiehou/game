@@ -15,7 +15,7 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); }
-button, select {
+button, select, input {
   background: var(--panel2);
   color: var(--text);
   border: 1px solid var(--border);
@@ -26,6 +26,8 @@ button, select {
 }
 button:hover { border-color: var(--accent); color: #fff; }
 button:active { transform: translateY(1px); }
+select { cursor: pointer; }
+input { cursor: text; }
 
 #app { display: flex; flex-direction: column; height: 100%; }
 .topbar {
@@ -46,7 +48,7 @@ button:active { transform: translateY(1px); }
 
 .layout {
   flex: 1; display: grid;
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: 1fr 380px;
   min-height: 0;
 }
 @media (max-width: 980px) {
@@ -99,6 +101,7 @@ button:active { transform: translateY(1px); }
   pointer-events: none; font-weight: 700;
 }
 
+/* ── 侧边栏 ── */
 .side {
   background: var(--panel);
   border-left: 1px solid var(--border);
@@ -106,27 +109,51 @@ button:active { transform: translateY(1px); }
   padding: 10px;
   display: flex; flex-direction: column; gap: 10px;
 }
+
+/* ── 标签页 ── */
+.tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  padding: 4px; background: #0f1825; border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.tab {
+  flex: 1 1 auto; padding: 6px 8px; font-size: 12px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 5px; color: var(--muted); cursor: pointer;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.tab.active {
+  background: var(--panel2); color: var(--accent);
+  border-color: var(--accent);
+}
+.tab-content { display: none; flex-direction: column; gap: 10px; }
+.tab-content.active { display: flex; }
+
 .card {
   background: #162033;
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 12px;
 }
+.log-card { flex-shrink: 0; }
 .card h2 {
   margin: 0 0 8px; font-size: 13px; color: var(--accent);
   letter-spacing: .06em; text-transform: uppercase;
 }
 .detail { font-size: 13px; line-height: 1.55; color: var(--text); }
 .detail .muted { color: var(--muted); }
-.detail .row { display: flex; justify-content: space-between; gap: 8px; }
-.btn-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.detail .row, .council-row .row { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
 .btn-row button { flex: 1 1 auto; }
+.btn-row select { flex: 1 1 auto; min-width: 80px; }
 #player-select { width: 100%; margin-bottom: 8px; }
-.list { font-size: 12px; line-height: 1.45; max-height: 140px; overflow: auto; }
+#dipl-char-select, #scheme-target-select, #scheme-type-select { width: 100%; margin-bottom: 8px; }
+.list { font-size: 12px; line-height: 1.45; max-height: 160px; overflow: auto; }
 .list div { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
-.list.msg { color: #f0d78c; max-height: 90px; }
-.list.log { color: var(--muted); max-height: 120px; }
-.list.saves { max-height: 135px; }
+.list.msg { color: #f0d78c; max-height: 80px; }
+.list.log { color: var(--muted); max-height: 100px; }
+.list.saves { max-height: 120px; }
 .save-row { display: flex; gap: 6px; margin-bottom: 6px; }
 .save-row input { flex: 1; }
 .save-item { cursor: pointer; padding: 5px 6px !important; border-radius: 6px; }
@@ -149,3 +176,13 @@ button.mini:hover { background: #35507a; }
 .tag.war { background: #5a2430; color: #ffb4bc; }
 .tag.ok { background: #1f4a38; color: #9ef0c7; }
 .law-btn.selected { background: #35507a; border-color: var(--accent); }
+
+/* ── 内阁行 ── */
+.council-row {
+  padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.council-row:last-child { border-bottom: none; }
+.council-row select { font-size: 12px; padding: 3px 6px; max-width: 180px; }
+
+/* ── 指挥官选择 ── */
+#commander-select { flex: 1; }

@@ -28,57 +28,152 @@
       </section>
 
       <aside class="side">
-        <section class="card">
-          <h2>玩家</h2>
-          <select id="player-select"></select>
-          <div id="player-detail" class="detail"></div>
-          <div class="btn-row">
-            <button id="btn-raise">征召军团</button>
-            <button id="btn-feast">宴会 (20金)</button>
-            <button id="btn-disband">解散军团</button>
-          </div>
-        </section>
+        <!-- 标签页导航 -->
+        <nav class="tabs" id="tab-nav">
+          <button class="tab active" data-tab="player">玩家</button>
+          <button class="tab" data-tab="county">省份</button>
+          <button class="tab" data-tab="diplomacy">外交</button>
+          <button class="tab" data-tab="schemes">阴谋</button>
+          <button class="tab" data-tab="council">内阁</button>
+          <button class="tab" data-tab="war">战争</button>
+          <button class="tab" data-tab="save">存档</button>
+        </nav>
 
-        <section class="card">
-          <h2>法律</h2>
-          <div id="laws" class="detail"></div>
-        </section>
+        <!-- 玩家面板 -->
+        <div class="tab-content active" id="tab-player">
+          <section class="card">
+            <h2>玩家</h2>
+            <select id="player-select"></select>
+            <div id="player-detail" class="detail"></div>
+            <div class="btn-row">
+              <button id="btn-raise">征召军团</button>
+              <button id="btn-feast">宴会 (20金)</button>
+              <button id="btn-disband">解散军团</button>
+            </div>
+          </section>
 
-        <section class="card">
-          <h2>选中省份</h2>
-          <div id="county-detail" class="detail">点击地图选择省份</div>
-          <div class="btn-row">
-            <button id="btn-move">行军至此</button>
-            <button id="btn-war">对领主宣战</button>
-            <button id="btn-improve">改善关系 (10金)</button>
-          </div>
-        </section>
+          <section class="card">
+            <h2>法律</h2>
+            <div id="laws" class="detail"></div>
+          </section>
 
-        <section class="card">
-          <h2>战争</h2>
-          <div id="wars" class="list"></div>
-        </section>
+          <section class="card">
+            <h2>军团详情</h2>
+            <div id="army-detail" class="detail">未选择军团</div>
+            <div class="btn-row">
+              <button id="btn-recruit-knights">招募精锐 (25金)</button>
+            </div>
+            <div class="btn-row">
+              <select id="commander-select"></select>
+              <button id="btn-set-commander">任命指挥官</button>
+            </div>
+          </section>
+        </div>
 
-        <section class="card">
-          <h2>针对你的派系</h2>
-          <div id="factions" class="list"></div>
-        </section>
+        <!-- 省份面板 -->
+        <div class="tab-content" id="tab-county">
+          <section class="card">
+            <h2>选中省份</h2>
+            <div id="county-detail" class="detail">点击地图选择省份</div>
+            <div class="btn-row">
+              <button id="btn-move">行军至此</button>
+              <button id="btn-war">对领主宣战</button>
+              <button id="btn-improve">改善关系 (10金)</button>
+              <button id="btn-develop">发展 (+1, 10金)</button>
+              <button id="btn-fabricate">伪造宣称 (50金)</button>
+            </div>
+          </section>
+          <section class="card">
+            <h2>建筑</h2>
+            <div id="county-buildings" class="detail">选择省份查看建筑</div>
+          </section>
+          <section class="card">
+            <h2>宣称</h2>
+            <div id="claims" class="list"></div>
+          </section>
+        </div>
 
-        <section class="card">
-          <h2>存档管理器</h2>
-          <div class="save-row">
-            <input id="save-name" placeholder="存档名" maxlength="48" />
-            <button id="btn-save">保存</button>
-          </div>
-          <div id="saves" class="list saves"></div>
-          <div class="btn-row">
-            <button id="btn-load">读取选中</button>
-            <button id="btn-delete-save">删除选中</button>
-            <button id="btn-new">新局</button>
-          </div>
-        </section>
+        <!-- 外交面板 -->
+        <div class="tab-content" id="tab-diplomacy">
+          <section class="card">
+            <h2>选择角色</h2>
+            <select id="dipl-char-select"></select>
+            <div id="dipl-char-detail" class="detail">选择一位角色</div>
+          </section>
+          <section class="card">
+            <h2>外交操作</h2>
+            <div class="btn-row">
+              <button id="btn-alliance">缔结同盟</button>
+              <button id="btn-non-aggression">互不侵犯</button>
+              <button id="btn-marry">求婚</button>
+            </div>
+            <div class="btn-row">
+              <input id="gift-amount" type="number" value="50" min="1" max="500" style="width:70px" />
+              <button id="btn-gift">送礼</button>
+              <button id="btn-rival">设为宿敌</button>
+            </div>
+          </section>
+          <section class="card">
+            <h2>条约与关系</h2>
+            <div id="treaties" class="list"></div>
+          </section>
+        </div>
 
-        <section class="card">
+        <!-- 阴谋面板 -->
+        <div class="tab-content" id="tab-schemes">
+          <section class="card">
+            <h2>发起阴谋</h2>
+            <select id="scheme-target-select"></select>
+            <select id="scheme-type-select"></select>
+            <div class="btn-row">
+              <button id="btn-start-scheme">开始策划</button>
+            </div>
+          </section>
+          <section class="card">
+            <h2>进行中阴谋</h2>
+            <div id="scheme-list" class="list"></div>
+          </section>
+        </div>
+
+        <!-- 内阁面板 -->
+        <div class="tab-content" id="tab-council">
+          <section class="card">
+            <h2>内阁成员</h2>
+            <div id="council-list" class="detail"></div>
+          </section>
+        </div>
+
+        <!-- 战争面板 -->
+        <div class="tab-content" id="tab-war">
+          <section class="card">
+            <h2>战争</h2>
+            <div id="wars" class="list"></div>
+          </section>
+          <section class="card">
+            <h2>针对你的派系</h2>
+            <div id="factions" class="list"></div>
+          </section>
+        </div>
+
+        <!-- 存档面板 -->
+        <div class="tab-content" id="tab-save">
+          <section class="card">
+            <h2>存档管理器</h2>
+            <div class="save-row">
+              <input id="save-name" placeholder="存档名" maxlength="48" />
+              <button id="btn-save">保存</button>
+            </div>
+            <div id="saves" class="list saves"></div>
+            <div class="btn-row">
+              <button id="btn-load">读取选中</button>
+              <button id="btn-delete-save">删除选中</button>
+              <button id="btn-new">新局</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- 日志（始终显示） -->
+        <section class="card log-card">
           <h2>指令 / 日志</h2>
           <div id="messages" class="list msg"></div>
           <div id="log" class="list log"></div>

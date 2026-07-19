@@ -12,8 +12,10 @@ from ck_engine.ai.personality import AiPersonality
 from ck_engine.core import NONE_ID
 from ck_engine.game.simulation import GameSimulation
 from ck_engine.military.army import ArmyStatus, UnitType
-from ck_engine.politics.diplomacy import CasusBelli
+from ck_engine.politics.council import CouncilPosition, CouncilTask
+from ck_engine.politics.diplomacy import CasusBelli, TreatyKind
 from ck_engine.politics.laws import CrownAuthority, GenderLaw, SuccessionLaw
+from ck_engine.politics.schemes import SchemeKind
 from ck_engine.core.balance import (
     FACTION_APPEASE_GOLD,
     FACTION_APPEASE_PLAYER,
@@ -82,6 +84,7 @@ class GameAPI:
                     "levies": county.monthly_levies(),
                     "tax": round(county.monthly_tax(), 2),
                     "fort": county.fort_level,
+                    "buildings": list(county.buildings),
                     "holder_id": county.holder if county.holder != NONE_ID else None,
                     "holder_name": holder.name if holder else "无主",
                     "color": color,
@@ -290,6 +293,17 @@ class GameAPI:
                 for inst in self.sim.events.pending
                 if inst.character == self.player_id
             ],
+            "player_schemes": self._player_schemes(),
+            "player_council": self._player_council(),
+            "player_claims": self._player_claims(),
+            "treaties": self._player_treaties(),
+            "characters": self._all_characters(),
+            "scheme_types": [(k, v) for k, v in [
+                ("MURDER", "谋杀"), ("ABDUCT", "绑架"), ("FABRICATE_HOOK", "伪造把柄"),
+                ("SWAY", "拉拢"), ("SEDUCE", "引诱"), ("CLAIM_FABRICATION", "伪造宣称"),
+            ]],
+            "council_positions": [(p.name, p.name_zh()) for p in CouncilPosition.all()],
+            "council_tasks": [(t.name, t.name_zh()) for t in CouncilTask],
         }
 
     def _holder_color(self, holder_id: int) -> str:
@@ -306,6 +320,129 @@ class GameAPI:
         # 按 id 生成稳定色
         hue = (holder_id * 47) % 360
         return f"hsl({hue} 55% 42%)"
+
+    # ---------- snapshot 辅助 ----------
+    def _player_schemes(self) -> List[Dict[str, Any]]:
+        out = []
+        for s in self.sim.schemes.schemes.values():
+            if s.owner != self.player_id or s.exposed or s.is_complete():
+                continue
+            target = self.sim.world.character(s.target)
+            out.append({
+                "id": s.id,
+                "kind": s.kind.name,
+                "kind_zh": s.kind.name_zh(),
+                "target_id": s.target,
+                "target_name": target.name if target else "?",
+                "progress": round(s.progress, 1),
+                "secrecy": round(s.secrecy, 1),
+            })
+        return out
+
+    def _player_council(self) -> Optional[Dict[str, Any]]:
+        council = self.sim.councils.get(self.player_id)
+        if not council:
+            return None
+        w = self.sim.world
+        members = []
+        for pos in CouncilPosition.all():
+            who = council.get(pos)
+            task = council.task_of(pos)
+            ch = w.character(who) if who != NONE_ID else None
+            members.append({
+                "position": pos.name,
+                "position_zh": pos.name_zh(),
+                "holder_id": who if who != NONE_ID else None,
+                "holder_name": ch.name if ch else "（空缺）",
+                "task": task.name,
+                "task_zh": task.name_zh(),
+            })
+        return {"members": members}
+
+    def _player_claims(self) -> List[Dict[str, Any]]:
+        out = []
+        w = self.sim.world
+        for claim in self.sim.diplomacy.claims_of(self.player_id):
+            title = w.title(claim.title) if claim.title != NONE_ID else None
+            county = w.map.get(claim.county) if claim.county else None
+            out.append({
+                "title_id": claim.title if claim.title != NONE_ID else None,
+                "title_name": title.name if title else None,
+                "county_id": claim.county,
+                "county_name": county.name if county else None,
+                "strength": claim.strength,
+                "pressed": claim.pressed,
+            })
+        return out
+
+    def _player_treaties(self) -> List[Dict[str, Any]]:
+        out = []
+        w = self.sim.world
+        for t in self.sim.diplomacy.treaties:
+            if t.a != self.player_id and t.b != self.player_id:
+                continue
+            other_id = t.b if t.a == self.player_id else t.a
+            other = w.character(other_id)
+            out.append({
+                "kind": t.kind.name,
+                "kind_zh": t.kind.name_zh(),
+                "other_id": other_id,
+                "other_name": other.name if other else "?",
+                "expires_year": t.expires_year,
+            })
+        # 停战
+        for (a, b), until in self.sim.diplomacy.truce_until.items():
+            if self.player_id not in (a, b):
+                continue
+            other_id = b if a == self.player_id else a
+            other = w.character(other_id)
+            if until > w.date.year:
+                out.append({
+                    "kind": "TRUCE",
+                    "kind_zh": "停战",
+                    "other_id": other_id,
+                    "other_name": other.name if other else "?",
+                    "expires_year": until,
+                })
+        return out
+
+    def _all_characters(self) -> List[Dict[str, Any]]:
+        """输出所有存活角色的简要信息，供前端人物详情面板使用。"""
+        w = self.sim.world
+        out = []
+        for c in w.alive_characters():
+            attrs = w.effective_attrs(c.id)
+            dynasty = w.dynasties.get(c.dynasty)
+            title = w.title(c.primary_title) if c.primary_title != NONE_ID else None
+            out.append({
+                "id": c.id,
+                "name": c.name,
+                "dynasty_name": dynasty.name if dynasty else "",
+                "gender": c.gender.name,
+                "age": c.age_at(w.date),
+                "is_ruler": c.is_ruler,
+                "title": title.name if title else "",
+                "gold": round(c.gold, 0),
+                "prestige": round(c.prestige, 0),
+                "is_married": c.is_married(),
+                "spouse_ids": list(c.spouses),
+                "attrs": {
+                    "diplomacy": attrs.diplomacy if attrs else 0,
+                    "martial": attrs.martial if attrs else 0,
+                    "stewardship": attrs.stewardship if attrs else 0,
+                    "intrigue": attrs.intrigue if attrs else 0,
+                    "learning": attrs.learning if attrs else 0,
+                    "prowess": attrs.prowess if attrs else 0,
+                } if attrs else None,
+                "opinion_of_player": w.opinion(c.id, self.player_id),
+                "player_opinion": w.opinion(self.player_id, c.id),
+                "relation_allied": self.sim.diplomacy.are_allied(self.player_id, c.id),
+                "relation_rival": self.sim.diplomacy.flags(self.player_id, c.id).rival,
+                "relation_at_war": self.sim.diplomacy.flags(self.player_id, c.id).at_war,
+                "relation_marriage": self.sim.diplomacy.flags(self.player_id, c.id).marriage_pact,
+                "held_title_ids": list(c.held_titles),
+            })
+        return out
 
     # ---------- 操作 ----------
     def action(self, payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -375,6 +512,32 @@ class GameAPI:
                 self._set_crown_authority(int(payload.get("level", 0)))
             elif kind == "set_gender_law":
                 self._set_gender_law(payload.get("law"))
+            elif kind == "start_scheme":
+                self._start_scheme(payload.get("scheme_kind"), int(payload["target_id"]))
+            elif kind == "form_alliance":
+                self._form_alliance(int(payload["target_id"]))
+            elif kind == "form_non_aggression":
+                self._form_non_aggression(int(payload["target_id"]))
+            elif kind == "arrange_marriage":
+                self._arrange_marriage(int(payload["target_id"]))
+            elif kind == "send_gift":
+                self._send_gift(int(payload["target_id"]), float(payload.get("amount", 50)))
+            elif kind == "set_rival":
+                self._set_rival(int(payload["target_id"]))
+            elif kind == "appoint_council":
+                self._appoint_council(payload.get("position"), int(payload.get("character_id", NONE_ID)))
+            elif kind == "assign_council_task":
+                self._assign_council_task(payload.get("position"), payload.get("task"))
+            elif kind == "grant_title":
+                self._grant_title(int(payload["title_id"]), int(payload["target_id"]))
+            elif kind == "develop_county":
+                self._develop_county(int(payload["county_id"]))
+            elif kind == "recruit_knights":
+                self._recruit_knights()
+            elif kind == "set_commander":
+                self._set_commander(int(payload["army_id"]), int(payload["character_id"]))
+            elif kind == "fabricate_claim":
+                self._fabricate_claim(int(payload["county_id"]))
             else:
                 self.notify(f"未知操作: {kind}")
         except Exception as e:  # noqa: BLE001 — 返回给前端
@@ -448,6 +611,251 @@ class GameAPI:
         if not title:
             raise ValueError("主头衔不存在")
         return title
+
+    # ---------- 阴谋 ----------
+    def _start_scheme(self, scheme_kind_name: Any, target_id: int) -> None:
+        if scheme_kind_name is None:
+            raise ValueError("缺少 scheme_kind")
+        try:
+            kind = SchemeKind[scheme_kind_name]
+        except KeyError:
+            raise ValueError(f"未知阴谋类型: {scheme_kind_name}")
+        if target_id == self.player_id:
+            raise ValueError("不能对自己发起阴谋")
+        target = self.sim.world.character(target_id)
+        if not target or not target.is_alive():
+            raise ValueError("目标无效")
+        # 已有针对同一目标的同类阴谋则拒绝
+        for s in self.sim.schemes.schemes.values():
+            if s.owner == self.player_id and s.target == target_id and not s.exposed and not s.is_complete():
+                raise ValueError("已有针对该目标的进行中阴谋")
+        sid = self.sim.schemes.start(kind, self.player_id, target_id, self.sim.world.date)
+        self.sim.world.push_log(f"{self._name(self.player_id)} 开始策划{kind.name_zh()}（目标：{target.name}）")
+        self.notify(f"已发起{kind.name_zh()} → {target.name}（#{sid}）")
+
+    # ---------- 外交 ----------
+    def _form_alliance(self, target_id: int) -> None:
+        if target_id == self.player_id:
+            raise ValueError("不能与自己结盟")
+        dip = self.sim.diplomacy
+        if dip.are_allied(self.player_id, target_id):
+            raise ValueError("已是同盟")
+        if dip.flags(self.player_id, target_id).at_war:
+            raise ValueError("交战中无法结盟")
+        player = self.sim.world.character(self.player_id)
+        target = self.sim.world.character(target_id)
+        if not player or not target:
+            raise ValueError("目标无效")
+        # 需要好感达标或已有联姻
+        op = self.sim.world.opinion(target_id, self.player_id)
+        has_marriage = dip.flags(self.player_id, target_id).marriage_pact
+        if op < 30 and not has_marriage:
+            raise ValueError(f"好感不足（需 30，当前 {op}）或需先联姻")
+        dip.form_alliance(self.player_id, target_id, self.sim.world.date)
+        self.sim.world.push_log(f"{player.name} 与 {target.name} 缔结同盟")
+        self.notify(f"已与 {target.name} 缔结同盟")
+
+    def _form_non_aggression(self, target_id: int) -> None:
+        if target_id == self.player_id:
+            raise ValueError("无效目标")
+        dip = self.sim.diplomacy
+        if dip.flags(self.player_id, target_id).non_aggression:
+            raise ValueError("已有互不侵犯条约")
+        if dip.flags(self.player_id, target_id).at_war:
+            raise ValueError("交战中无法签订")
+        target = self.sim.world.character(target_id)
+        if not target:
+            raise ValueError("目标无效")
+        f = dip.flags_mut(self.player_id, target_id)
+        f.non_aggression = True
+        dip.treaties.append(self._make_treaty(target_id, TreatyKind.NON_AGGRESSION, 20))
+        self.sim.world.push_log(f"{self._name(self.player_id)} 与 {target.name} 签订互不侵犯条约")
+        self.notify(f"已与 {target.name} 签订互不侵犯条约")
+
+    def _make_treaty(self, target_id: int, kind: TreatyKind, years: int):
+        from ck_engine.politics.diplomacy import Treaty
+        return Treaty(
+            a=self.player_id, b=target_id, kind=kind,
+            start=self.sim.world.date, expires_year=self.sim.world.date.year + years,
+        )
+
+    def _arrange_marriage(self, target_id: int) -> None:
+        w = self.sim.world
+        player = w.character(self.player_id)
+        target = w.character(target_id)
+        if not player or not target:
+            raise ValueError("目标无效")
+        if not target.is_alive():
+            raise ValueError("目标已故")
+        if player.gender == target.gender:
+            raise ValueError("同性无法成婚")
+        if player.is_married():
+            raise ValueError("玩家已有配偶")
+        if target.is_married():
+            raise ValueError("目标已有配偶")
+        if not target.is_adult(w.date):
+            raise ValueError("目标未成年")
+        op = w.opinion(target_id, self.player_id)
+        if op < 0:
+            raise ValueError(f"对方好感不足（当前 {op}）")
+        ok = w.marry(self.player_id, target_id)
+        if not ok:
+            raise ValueError("婚姻失败")
+        # 联姻自动设 marriage_pact
+        dip = self.sim.diplomacy
+        dip.flags_mut(self.player_id, target_id).marriage_pact = True
+        dip.treaties.append(self._make_treaty(target_id, TreatyKind.MARRIAGE_PACT, 50))
+        self.notify(f"已与 {target.name} 成婚（联姻协定生效）")
+
+    def _send_gift(self, target_id: int, amount: float) -> None:
+        if target_id == self.player_id:
+            raise ValueError("不能给自己送礼")
+        amount = max(1.0, min(500.0, amount))
+        player = self.sim.world.character(self.player_id)
+        if not player or player.gold < amount:
+            raise ValueError(f"金币不足（需要 {amount:.0f}）")
+        target = self.sim.world.character(target_id)
+        if not target:
+            raise ValueError("目标无效")
+        player.add_gold(-amount)
+        target.add_gold(amount)
+        gain = self.sim.diplomacy.gift_opinion_gain(amount)
+        self.sim.world.modify_opinion(target_id, self.player_id, gain)
+        self.sim.world.modify_opinion(self.player_id, target_id, gain // 3)
+        self.notify(f"向 {target.name} 赠送 {amount:.0f} 金（好感 +{gain}）")
+
+    def _set_rival(self, target_id: int) -> None:
+        if target_id == self.player_id:
+            raise ValueError("无效目标")
+        dip = self.sim.diplomacy
+        if dip.flags(self.player_id, target_id).rival:
+            raise ValueError("已是宿敌")
+        target = self.sim.world.character(target_id)
+        if not target:
+            raise ValueError("目标无效")
+        dip.set_rival(self.player_id, target_id)
+        dip.set_rival(target_id, self.player_id)
+        self.sim.world.modify_opinion(self.player_id, target_id, -30)
+        self.sim.world.modify_opinion(target_id, self.player_id, -30)
+        self.sim.world.push_log(f"{self._name(self.player_id)} 视 {target.name} 为宿敌")
+        self.notify(f"已将 {target.name} 设为宿敌")
+
+    def _fabricate_claim(self, county_id: int) -> None:
+        county = self.sim.world.map.get(county_id)
+        if not county:
+            raise ValueError("省份不存在")
+        if county.holder == self.player_id:
+            raise ValueError("已是己方领地")
+        player = self.sim.world.character(self.player_id)
+        if not player or player.gold < 50:
+            raise ValueError("金币不足（需要 50）")
+        player.add_gold(-50)
+        # 找到该省的头衔
+        title_id = county.owner_title
+        if title_id == NONE_ID:
+            # 无头衔则用省份序号造一个虚拟宣称
+            self.sim.diplomacy.add_claim(self.player_id, NONE_ID, county_id, 60)
+        else:
+            self.sim.diplomacy.add_claim(self.player_id, title_id, county_id, 60)
+        self.sim.world.push_log(f"{player.name} 伪造了对 {county.name} 的宣称")
+        self.notify(f"已伪造对 {county.name} 的宣称（花费 50 金）")
+
+    # ---------- 内阁 ----------
+    def _appoint_council(self, position_name: Any, character_id: int) -> None:
+        if position_name is None:
+            raise ValueError("缺少 position")
+        try:
+            pos = CouncilPosition[position_name]
+        except KeyError:
+            raise ValueError(f"未知职位: {position_name}")
+        target = self.sim.world.character(character_id)
+        if not target or not target.is_alive():
+            raise ValueError("人选无效")
+        if not target.is_adult(self.sim.world.date):
+            raise ValueError("未成年不能入阁")
+        council = self.sim.councils.get_or_create(self.player_id)
+        # 如果该角色已在其它职位，先移除
+        for p in CouncilPosition.all():
+            if council.get(p) == character_id:
+                council.set(p, NONE_ID)
+        council.set(pos, character_id)
+        self.notify(f"任命 {target.name} 为{pos.name_zh()}")
+
+    def _assign_council_task(self, position_name: Any, task_name: Any) -> None:
+        if position_name is None or task_name is None:
+            raise ValueError("缺少 position 或 task")
+        try:
+            pos = CouncilPosition[position_name]
+            task = CouncilTask[task_name]
+        except KeyError as e:
+            raise ValueError(f"未知参数: {e}")
+        council = self.sim.councils.get_or_create(self.player_id)
+        council.tasks[pos] = task
+        self.notify(f"{pos.name_zh()} 任务改为：{task.name_zh()}")
+
+    # ---------- 头衔 ----------
+    def _grant_title(self, title_id: int, target_id: int) -> None:
+        w = self.sim.world
+        player = w.character(self.player_id)
+        target = w.character(target_id)
+        if not player or not target:
+            raise ValueError("目标无效")
+        title = w.title(title_id)
+        if not title:
+            raise ValueError("头衔不存在")
+        if title.holder != self.player_id:
+            raise ValueError("该头衔不属于你")
+        if title_id == player.primary_title:
+            raise ValueError("不能授予主头衔")
+        ok = w.grant_title(title_id, target_id)
+        if not ok:
+            raise ValueError("授予失败")
+        # 授予后目标成为封臣
+        if player.primary_title != NONE_ID:
+            w.set_vassal(title_id, player.primary_title)
+        self.notify(f"将「{title.name}」授予 {target.name}")
+
+    # ---------- 经济与军事 ----------
+    def _develop_county(self, county_id: int) -> None:
+        county = self.sim.world.map.get(county_id)
+        if not county:
+            raise ValueError("省份不存在")
+        if county.holder != self.player_id:
+            raise ValueError("不是己方领地")
+        player = self.sim.world.character(self.player_id)
+        if not player or player.gold < 10:
+            raise ValueError("金币不足（需要 10）")
+        cap = county.terrain.development_cap()
+        if county.development >= cap:
+            raise ValueError(f"已达发展上限（{cap}）")
+        player.add_gold(-10)
+        county.development = min(cap, county.development + 1)
+        self.notify(f"{county.name} 发展度 +1（→ {county.development}）")
+
+    def _recruit_knights(self) -> None:
+        player = self.sim.world.character(self.player_id)
+        if not player or player.gold < 25:
+            raise ValueError("金币不足（需要 25）")
+        armies = self.sim.wars.armies_of(self.player_id)
+        if not armies:
+            raise ValueError("无野战军，请先征召")
+        army = armies[0]
+        player.add_gold(-25)
+        army.add_men(UnitType.HEAVY_CAVALRY, 40)
+        army.add_men(UnitType.HEAVY_INFANTRY, 80)
+        self.notify(f"招募精锐：重骑兵+40 重步兵+80（{army.name}）")
+
+    def _set_commander(self, army_id: int, character_id: int) -> None:
+        army = self.sim.wars.army(army_id)
+        if not army or army.owner != self.player_id:
+            raise ValueError("无法指挥该军团")
+        target = self.sim.world.character(character_id)
+        if not target or not target.is_alive():
+            raise ValueError("人选无效")
+        if not target.is_adult(self.sim.world.date):
+            raise ValueError("未成年不能指挥")
+        army.commander = character_id
+        self.notify(f"任命 {target.name} 为 {army.name} 指挥官")
 
     def _raise_army(self, county_id: int) -> None:
         county = self.sim.world.map.get(county_id)
