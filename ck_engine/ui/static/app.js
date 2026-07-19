@@ -116,7 +116,7 @@ function renderMap() {
     }
   }
 
-for (const a of state.armies || []) {
+  for (const a of state.armies || []) {
     const cls = [
       "army",
       a.is_player ? "player" : "",
