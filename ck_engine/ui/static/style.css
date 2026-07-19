@@ -125,6 +125,12 @@ button:active { transform: translateY(1px); }
 .list div { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
 .list.msg { color: #f0d78c; max-height: 90px; }
 .list.log { color: var(--muted); max-height: 120px; }
+.list.saves { max-height: 135px; }
+.save-row { display: flex; gap: 6px; margin-bottom: 6px; }
+.save-row input { flex: 1; }
+.save-item { cursor: pointer; padding: 5px 6px !important; border-radius: 6px; }
+.save-item:hover { background: rgba(255,255,255,.05); }
+.save-item.selected { background: rgba(212,160,23,.18); border: 1px solid rgba(212,160,23,.45) !important; }
 .list-row {
   display: flex; justify-content: space-between; align-items: center;
   gap: 6px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.04);

@@ -527,7 +527,24 @@ class GameAPI:
         )
         self.notify("已达成白和")
 
-    def _save(self) -> None:
+    def _save_file(self, name: Any = None) -> Path:
+        if name is None or str(name).strip() == "":
+            return self.save_path
+        safe = Path(str(name)).name
+        if not safe.endswith(".json"):
+            safe = f"{safe}.json"
+        return self.save_path.parent / safe
+
+    def _delete_save(self, name: str) -> None:
+        path = self._save_file(name)
+        if path.stem == "autosave":
+            raise ValueError("不能删除自动存档")
+        if not path.exists():
+            raise ValueError("存档不存在")
+        path.unlink()
+        self.notify(f"已删除存档 → {path.name}")
+
+    def _save(self, name: Any = None) -> None:
         """完整快照：日期、玩家、人物、省份、头衔、战争、外交、派系、阴谋、军团、围城。"""
         w = self.sim.world
         sim = self.sim
@@ -578,6 +595,7 @@ class GameAPI:
                 {
                     "id": a.id, "owner": a.owner, "name": a.name, "location": a.location,
                     "commander": a.commander, "status": a.status.name, "morale": a.morale,
+                    "supply": a.supply,
                     "path": list(a.path), "stacks": [{"unit_type": s.unit_type.name, "men": s.men} for s in a.stacks],
                 }
                 for a in sim.wars.armies.values() if a.status != ArmyStatus.DISBANDED
@@ -628,14 +646,18 @@ class GameAPI:
             "log": w.log[-100:],
             "messages": self.messages[-20:],
         }
-        self.save_path.parent.mkdir(parents=True, exist_ok=True)
-        self.save_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-        self.notify(f"已存档 → {self.save_path.name}")
+        path = self._save_file(name)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        if name is None:
+            self.save_path = path
+        self.notify(f"已存档 → {path.name}")
 
-    def _load(self) -> None:
-        if not self.save_path.exists():
+    def _load(self, name: Any = None) -> None:
+        path = self._save_file(name)
+        if not path.exists():
             raise ValueError("没有存档")
-        data = json.loads(self.save_path.read_text(encoding="utf-8"))
+        data = json.loads(path.read_text(encoding="utf-8"))
         # 新开局再覆盖动态状态，保证 ID 一致
         self.sim = GameSimulation()
         w = self.sim.world
@@ -715,6 +737,7 @@ class GameAPI:
             )
             army.status = ArmyStatus[row["status"]]
             army.morale = row.get("morale", 100.0)
+            army.supply = row.get("supply", army.supply)
             army.path = list(row.get("path", []))
             for s in row.get("stacks", []):
                 army.add_men(UnitType[s["unit_type"]], s["men"])
@@ -813,4 +836,6 @@ class GameAPI:
         self._sync_player()
         self.selected_county = None
         self.selected_army = None
-        self.notify(f"已读档 ← {self.save_path.name}")
+        if name is None:
+            self.save_path = path
+        self.notify(f"已读档 ← {path.name}")

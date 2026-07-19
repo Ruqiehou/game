@@ -1,6 +1,7 @@
 let state = null;
 let selectedCounty = null;
 let selectedArmy = null;
+let selectedSave = null;
 
 async function apiGet() {
   const r = await fetch("/api/state");

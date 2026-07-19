@@ -135,6 +135,17 @@ class TestSaveLoad(unittest.TestCase):
         api._load()
         self.assertEqual(str(api.sim.world.date), before)
 
+    def test_named_save_manager(self):
+        api = GameAPI()
+        name = "unit_test_save"
+        api._save(name)
+        self.assertTrue(any(s["name"] == name for s in api._list_saves()))
+        api.sim.run_days(10)
+        api._load(name)
+        self.assertEqual(str(api.sim.world.date), "1066-01-01")
+        api._delete_save(name)
+        self.assertFalse(any(s["name"] == name for s in api._list_saves()))
+
 
 class TestSeasonHelper(unittest.TestCase):
     def test_winter_month(self):

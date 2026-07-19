@@ -60,14 +60,23 @@
         </section>
 
         <section class="card">
+          <h2>存档管理器</h2>
+          <div class="save-row">
+            <input id="save-name" placeholder="存档名" maxlength="48" />
+            <button id="btn-save">保存</button>
+          </div>
+          <div id="saves" class="list saves"></div>
+          <div class="btn-row">
+            <button id="btn-load">读取选中</button>
+            <button id="btn-delete-save">删除选中</button>
+            <button id="btn-new">新局</button>
+          </div>
+        </section>
+
+        <section class="card">
           <h2>指令 / 日志</h2>
           <div id="messages" class="list msg"></div>
           <div id="log" class="list log"></div>
-          <div class="btn-row">
-            <button id="btn-save">存档</button>
-            <button id="btn-load">读档</button>
-            <button id="btn-new">新局</button>
-          </div>
         </section>
       </aside>
     </main>
