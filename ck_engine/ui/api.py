@@ -344,6 +344,8 @@ class GameAPI:
                 self._appease_faction(int(payload["faction_id"]))
             elif kind == "white_peace":
                 self._white_peace(int(payload["war_id"]))
+            elif kind == "resolve_event":
+                self._resolve_event(int(payload["event_id"]), int(payload["choice_id"]))
             elif kind == "save":
                 self._save(payload.get("name"))
             elif kind == "load":
