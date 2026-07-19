@@ -274,6 +274,7 @@ class GameAPI:
             "sea": sea_band(),
             "viewbox": viewbox(),
             "supply_low_threshold": SUPPLY_LOW_THRESHOLD,
+            "saves": self._list_saves(),
         }
 
     def _holder_color(self, holder_id: int) -> str:
@@ -533,10 +534,36 @@ class GameAPI:
     def _save_file(self, name: Any = None) -> Path:
         if name is None or str(name).strip() == "":
             return self.save_path
-        safe = Path(str(name)).name
-        if not safe.endswith(".json"):
-            safe = f"{safe}.json"
-        return self.save_path.parent / safe
+        raw = str(name).strip()
+        raw = re.sub(r"[\\/:*?\"<>|]+", "_", raw)
+        raw = re.sub(r"\s+", "_", raw)
+        safe = Path(raw).name[:48] or "autosave"
+        if safe.lower().endswith(".json"):
+            safe = safe[:-5]
+        return self.save_path.parent / f"{safe}.json"
+
+    def _list_saves(self) -> List[Dict[str, Any]]:
+        folder = self.save_path.parent
+        if not folder.exists():
+            return []
+        rows: List[Dict[str, Any]] = []
+        for path in sorted(folder.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True):
+            row: Dict[str, Any] = {
+                "name": path.stem,
+                "file": path.name,
+                "mtime": int(path.stat().st_mtime),
+                "size": path.stat().st_size,
+            }
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+                date = data.get("date")
+                if isinstance(date, list) and len(date) == 3:
+                    row["date"] = f"{date[0]:04d}-{date[1]:02d}-{date[2]:02d}"
+                row["player_id"] = data.get("player_id")
+            except Exception:
+                row["broken"] = True
+            rows.append(row)
+        return rows
 
     def _delete_save(self, name: str) -> None:
         path = self._save_file(name)

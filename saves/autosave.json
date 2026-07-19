@@ -8,11 +8,11 @@
   "player_id": 1,
   "characters": {
     "1": {
-      "gold": 414.58315680000004,
-      "prestige": 362.4,
+      "gold": 415.80010240000007,
+      "prestige": 368.6,
       "piety": 79.0,
       "stress": 0,
-      "health": 5.0,
+      "health": 4.98,
       "life": "ALIVE",
       "held_titles": [
         1,
@@ -32,19 +32,17 @@
       "children": [
         3,
         4,
-        5,
-        26
+        5
       ],
       "traits": [
-        12,
+        7,
         5,
         1,
         6
       ],
       "opinion_cache": {
         "6": -25,
-        "9": -20,
-        "18": 5
+        "9": -15
       }
     },
     "2": {
@@ -65,11 +63,10 @@
       "children": [
         3,
         4,
-        5,
-        26
+        5
       ],
       "traits": [
-        12
+        3
       ],
       "opinion_cache": {}
     },
@@ -88,7 +85,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        8
       ],
       "opinion_cache": {}
     },
@@ -107,8 +104,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        6,
-        7
+        7,
+        4
       ],
       "opinion_cache": {}
     },
@@ -127,7 +124,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        3
+        4
       ],
       "opinion_cache": {}
     },
@@ -146,7 +143,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        12,
+        3,
+        10,
         2,
         11
       ],
@@ -155,9 +153,9 @@
       }
     },
     "7": {
-      "gold": 98.971028,
-      "prestige": 92.4,
-      "piety": 91.0,
+      "gold": 101.01926,
+      "prestige": 100.0,
+      "piety": 85.0,
       "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
@@ -169,20 +167,20 @@
       "father": 4294967295,
       "mother": 4294967295,
       "spouses": [
-        21
+        22
       ],
       "children": [],
       "traits": [
-        9
+        2
       ],
       "opinion_cache": {
         "1": 30
       }
     },
     "8": {
-      "gold": 40.038082,
-      "prestige": 92.4,
-      "piety": 91.0,
+      "gold": 69.6139096,
+      "prestige": 100.0,
+      "piety": 85.0,
       "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
@@ -193,24 +191,23 @@
       "is_ruler": true,
       "father": 4294967295,
       "mother": 4294967295,
-      "spouses": [
-        22
-      ],
+      "spouses": [],
       "children": [],
       "traits": [
-        10,
-        6
+        8,
+        10
       ],
       "opinion_cache": {
-        "1": 28
+        "1": 28,
+        "17": 5
       }
     },
     "9": {
-      "gold": 72.28658000000007,
-      "prestige": 411.79999999999995,
+      "gold": 397.9865800000001,
+      "prestige": 465.6,
       "piety": 79.0,
       "stress": 0,
-      "health": 5.0,
+      "health": 4.98,
       "life": "ALIVE",
       "held_titles": [
         5,
@@ -231,13 +228,13 @@
         13
       ],
       "traits": [
-        2,
+        7,
         1,
         6,
         9
       ],
       "opinion_cache": {
-        "1": -30
+        "1": -20
       }
     },
     "10": {
@@ -261,8 +258,7 @@
         13
       ],
       "traits": [
-        12,
-        5
+        10
       ],
       "opinion_cache": {}
     },
@@ -281,8 +277,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        5,
-        2
+        6,
+        9
       ],
       "opinion_cache": {}
     },
@@ -301,7 +297,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        2
+        3
       ],
       "opinion_cache": {}
     },
@@ -320,13 +316,13 @@
       "spouses": [],
       "children": [],
       "traits": [
-        6
+        12
       ],
       "opinion_cache": {}
     },
     "14": {
-      "gold": 136.8254976,
-      "prestige": 152.2,
+      "gold": 135.70291200000003,
+      "prestige": 158.60000000000002,
       "piety": 79.0,
       "stress": 0,
       "health": 5.0,
@@ -338,13 +334,11 @@
       "is_ruler": true,
       "father": 4294967295,
       "mother": 4294967295,
-      "spouses": [
-        22
-      ],
+      "spouses": [],
       "children": [],
       "traits": [
-        9,
-        10,
+        11,
+        4,
         2,
         8
       ],
@@ -357,7 +351,7 @@
       "prestige": 50.0,
       "piety": 50.0,
       "stress": 0,
-      "health": 5.0,
+      "health": 4.98,
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
@@ -367,7 +361,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        11
+        7,
+        2
       ],
       "opinion_cache": {
         "9": 20
@@ -388,17 +383,17 @@
       "spouses": [],
       "children": [],
       "traits": [
-        5,
-        1
+        10,
+        3
       ],
       "opinion_cache": {
         "9": 22
       }
     },
     "17": {
-      "gold": 177.85402639999995,
-      "prestige": 197.39999999999998,
-      "piety": 91.0,
+      "gold": 29.874766400000055,
+      "prestige": 200.0,
+      "piety": 85.0,
       "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
@@ -416,17 +411,17 @@
       ],
       "children": [],
       "traits": [
-        8,
         3
       ],
       "opinion_cache": {
-        "1": -5
+        "1": -5,
+        "8": 10
       }
     },
     "18": {
-      "gold": 19.959521599999988,
-      "prestige": 182.39999999999998,
-      "piety": 91.0,
+      "gold": 0.0,
+      "prestige": 105.0,
+      "piety": 85.0,
       "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
@@ -442,11 +437,11 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10,
+        12,
         1
       ],
       "opinion_cache": {
-        "1": 2
+        "1": -8
       }
     },
     "19": {
@@ -464,7 +459,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        12
+        2
       ],
       "opinion_cache": {}
     },
@@ -473,7 +468,7 @@
       "prestige": 50.0,
       "piety": 50.0,
       "stress": 0,
-      "health": 5.0,
+      "health": 4.98,
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
@@ -485,8 +480,8 @@
       ],
       "children": [],
       "traits": [
-        9,
-        6
+        2,
+        7
       ],
       "opinion_cache": {}
     },
@@ -502,12 +497,10 @@
       "is_ruler": false,
       "father": 4294967295,
       "mother": 4294967295,
-      "spouses": [
-        7
-      ],
+      "spouses": [],
       "children": [],
       "traits": [
-        9
+        2
       ],
       "opinion_cache": {}
     },
@@ -524,12 +517,10 @@
       "father": 4294967295,
       "mother": 4294967295,
       "spouses": [
-        8,
-        14
+        7
       ],
       "children": [],
       "traits": [
-        1,
         8
       ],
       "opinion_cache": {}
@@ -549,8 +540,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        12,
-        5
+        11
       ],
       "opinion_cache": {}
     },
@@ -569,7 +559,6 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10,
         7,
         8,
         3
@@ -581,7 +570,7 @@
       "prestige": 50.0,
       "piety": 50.0,
       "stress": 0,
-      "health": 4.98,
+      "health": 5.0,
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
@@ -591,28 +580,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        7,
-        8
-      ],
-      "opinion_cache": {}
-    },
-    "26": {
-      "gold": 50.0,
-      "prestige": 50.0,
-      "piety": 50.0,
-      "stress": 0,
-      "health": 5.0,
-      "life": "ALIVE",
-      "held_titles": [],
-      "primary_title": 4294967295,
-      "is_ruler": false,
-      "father": 1,
-      "mother": 2,
-      "spouses": [],
-      "children": [],
-      "traits": [
-        2,
-        11
+        4,
+        12
       ],
       "opinion_cache": {}
     }
@@ -636,7 +605,7 @@
     "4": {
       "holder": 17,
       "control": 100.0,
-      "development": 17
+      "development": 16
     },
     "5": {
       "holder": 18,
@@ -646,7 +615,7 @@
     "6": {
       "holder": 18,
       "control": 100.0,
-      "development": 11
+      "development": 10
     },
     "7": {
       "holder": 9,
@@ -661,7 +630,7 @@
     "9": {
       "holder": 8,
       "control": 100.0,
-      "development": 13
+      "development": 12
     },
     "10": {
       "holder": 1,
@@ -671,7 +640,7 @@
     "11": {
       "holder": 1,
       "control": 100.0,
-      "development": 15
+      "development": 16
     },
     "12": {
       "holder": 17,
@@ -811,13 +780,13 @@
   "wars": [
     {
       "id": 1,
-      "name": "威廉·征服者 对 利奥夫温·戈德温森 的宣称战争",
-      "cb": "CLAIM",
-      "attacker_primary": 9,
+      "name": "莫卡·诺森布里亚 对 利奥夫温·戈德温森 的征服",
+      "cb": "CONQUEST",
+      "attacker_primary": 18,
       "defender_primary": 8,
       "start": [
         1066,
-        3,
+        2,
         1
       ],
       "warscore": 0,
@@ -825,11 +794,11 @@
       "result": "ONGOING",
       "participants": [
         {
-          "character": 9,
+          "character": 18,
           "is_attacker": true,
           "joined": [
             1066,
-            3,
+            2,
             1
           ]
         },
@@ -838,7 +807,16 @@
           "is_attacker": false,
           "joined": [
             1066,
-            3,
+            2,
+            1
+          ]
+        },
+        {
+          "character": 17,
+          "is_attacker": true,
+          "joined": [
+            1066,
+            2,
             1
           ]
         }
@@ -847,9 +825,9 @@
   ],
   "armies": [
     {
-      "id": 1,
+      "id": 2,
       "owner": 8,
-      "name": "军团#1",
+      "name": "军团#2",
       "location": 9,
       "commander": 8,
       "status": "IDLE",
@@ -859,7 +837,7 @@
       "stacks": [
         {
           "unit_type": "LEVIES",
-          "men": 225
+          "men": 224
         },
         {
           "unit_type": "HEAVY_INFANTRY",
@@ -876,40 +854,11 @@
       ]
     },
     {
-      "id": 2,
-      "owner": 9,
-      "name": "军团#2",
-      "location": 7,
-      "commander": 9,
-      "status": "IDLE",
-      "morale": 100.0,
-      "supply": 100.0,
-      "path": [],
-      "stacks": [
-        {
-          "unit_type": "LEVIES",
-          "men": 2538
-        },
-        {
-          "unit_type": "HEAVY_INFANTRY",
-          "men": 253
-        },
-        {
-          "unit_type": "ARCHERS",
-          "men": 211
-        },
-        {
-          "unit_type": "LIGHT_CAVALRY",
-          "men": 126
-        }
-      ]
-    },
-    {
       "id": 3,
-      "owner": 18,
+      "owner": 17,
       "name": "军团#3",
-      "location": 5,
-      "commander": 18,
+      "location": 4,
+      "commander": 17,
       "status": "IDLE",
       "morale": 100.0,
       "supply": 100.0,
@@ -917,19 +866,19 @@
       "stacks": [
         {
           "unit_type": "LEVIES",
-          "men": 1080
+          "men": 1214
         },
         {
           "unit_type": "HEAVY_INFANTRY",
-          "men": 108
+          "men": 121
         },
         {
           "unit_type": "ARCHERS",
-          "men": 90
+          "men": 101
         },
         {
           "unit_type": "LIGHT_CAVALRY",
-          "men": 54
+          "men": 60
         }
       ]
     }
@@ -951,28 +900,21 @@
         "marriage_pact": false,
         "non_aggression": true
       },
-      "8,22": {
+      "7,22": {
         "allied": false,
         "at_war": false,
         "rival": false,
         "marriage_pact": true,
         "non_aggression": false
       },
-      "14,22": {
+      "8,18": {
         "allied": false,
-        "at_war": false,
+        "at_war": true,
         "rival": false,
-        "marriage_pact": true,
+        "marriage_pact": false,
         "non_aggression": false
       },
-      "7,21": {
-        "allied": false,
-        "at_war": false,
-        "rival": false,
-        "marriage_pact": true,
-        "non_aggression": false
-      },
-      "8,9": {
+      "8,17": {
         "allied": false,
         "at_war": true,
         "rival": false,
@@ -1005,19 +947,34 @@
     },
     "truce_until": {},
     "war_exhaustion": {
-      "9": 16.0,
-      "8": 15.8
+      "18": 17.0,
+      "8": 16.6
     }
   },
   "factions": [],
-  "schemes": [],
+  "schemes": [
+    {
+      "id": 1,
+      "kind": "MURDER",
+      "owner": 14,
+      "target": 7,
+      "progress": 20.3,
+      "secrecy": 31.6,
+      "started": [
+        1066,
+        2,
+        1
+      ],
+      "exposed": false
+    }
+  ],
   "councils": {
     "1": {
       "chancellor": 9,
       "marshal": 6,
       "steward": 14,
       "spymaster": 24,
-      "chaplain": 4,
+      "chaplain": 20,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1030,8 +987,8 @@
       "chancellor": 9,
       "marshal": 6,
       "steward": 14,
-      "spymaster": 24,
-      "chaplain": 1,
+      "spymaster": 1,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1044,8 +1001,8 @@
       "chancellor": 9,
       "marshal": 6,
       "steward": 14,
-      "spymaster": 24,
-      "chaplain": 1,
+      "spymaster": 1,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1059,7 +1016,7 @@
       "marshal": 6,
       "steward": 14,
       "spymaster": 24,
-      "chaplain": 4,
+      "chaplain": 20,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1071,9 +1028,9 @@
     "14": {
       "chancellor": 9,
       "marshal": 6,
-      "steward": 24,
-      "spymaster": 1,
-      "chaplain": 4,
+      "steward": 1,
+      "spymaster": 24,
+      "chaplain": 20,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1086,8 +1043,8 @@
       "chancellor": 9,
       "marshal": 6,
       "steward": 14,
-      "spymaster": 24,
-      "chaplain": 1,
+      "spymaster": 1,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1100,8 +1057,8 @@
       "chancellor": 9,
       "marshal": 6,
       "steward": 14,
-      "spymaster": 24,
-      "chaplain": 1,
+      "spymaster": 1,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1136,15 +1093,16 @@
     "[1066-01-01] 贝叶的奥多 获得头衔「贝叶伯爵领」",
     "[1066-01-01] 1066 年场景已加载：哈罗德统治英格兰，威廉虎视眈眈。",
     "[1066-01-01] 托斯蒂格与兄长不和，北方伯爵心怀观望。",
-    "[1066-02-01] 新生儿：威廉·戈德温",
-    "[1066-02-01] 利奥夫温·戈德温森 与 埃德温之妹埃尔德吉斯 成婚",
-    "[1066-02-01] 利奥夫温·戈德温森 征召了 225 人 (军团 1)",
-    "[1066-02-01] 贝叶的奥多 与 埃德温之妹埃尔德吉斯 成婚",
-    "[1066-02-01] 领地 麦西亚 发展度提升",
-    "[1066-03-01] 吉尔思·戈德温森 与 诺曼侍女艾娃 成婚",
-    "[1066-03-01] 宣战！宣称战争 (战争 1)",
-    "[1066-03-01] 威廉·征服者 征召了 2538 人 (军团 2)",
-    "[1066-03-01] 莫卡·诺森布里亚 征召了 1080 人 (军团 3)"
+    "[1066-02-01] 吉尔思·戈德温森 与 埃德温之妹埃尔德吉斯 成婚",
+    "[1066-02-01] 贝叶的奥多 对 吉尔思·戈德温森 启动阴谋「谋杀」(#1)",
+    "[1066-02-01] 宣战！征服 (战争 1)",
+    "[1066-02-01] 莫卡·诺森布里亚 征召了 1076 人 (军团 1)",
+    "[1066-02-01] 莫卡·诺森布里亚 举办了宴会",
+    "[1066-02-01] 莫卡·诺森布里亚 国库空虚，被迫解散 军团#1",
+    "[1066-03-01] 利奥夫温·戈德温森 征召了 224 人 (军团 2)",
+    "[1066-03-01] 埃德温·麦西亚 征召了 1214 人 (军团 3)",
+    "[1066-03-01] 莫卡·诺森布里亚 征召了 1076 人 (军团 4)",
+    "[1066-03-01] 莫卡·诺森布里亚 国库空虚，被迫解散 军团#4"
   ],
   "messages": [
     "欢迎。点击地图省份查看详情，使用侧栏下达指令。"
