@@ -35,9 +35,10 @@
         5
       ],
       "traits": [
-        6,
-        3,
-        1
+        7,
+        10,
+        1,
+        6
       ],
       "opinion_cache": {
         "6": -25,
@@ -65,8 +66,8 @@
         5
       ],
       "traits": [
-        11,
-        6
+        10,
+        11
       ],
       "opinion_cache": {}
     },
@@ -85,7 +86,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        8
+        4
       ],
       "opinion_cache": {}
     },
@@ -104,7 +105,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        3
+        8
       ],
       "opinion_cache": {}
     },
@@ -123,8 +124,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10,
-        8
+        11
       ],
       "opinion_cache": {}
     },
@@ -143,6 +143,7 @@
       "spouses": [],
       "children": [],
       "traits": [
+        1,
         2,
         11
       ],
@@ -167,8 +168,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        6,
-        2
+        5
       ],
       "opinion_cache": {
         "1": 30
@@ -191,7 +191,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        4
+        9,
+        3
       ],
       "opinion_cache": {
         "1": 28
@@ -223,8 +224,7 @@
         13
       ],
       "traits": [
-        4,
-        12,
+        8,
         1,
         6,
         9
@@ -273,7 +273,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        2
+        11
       ],
       "opinion_cache": {}
     },
@@ -292,8 +292,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        4,
-        2
+        6
       ],
       "opinion_cache": {}
     },
@@ -312,7 +311,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        6
+        3,
+        12
       ],
       "opinion_cache": {}
     },
@@ -333,8 +333,8 @@
       "spouses": [],
       "children": [],
       "traits": [
+        5,
         2,
-        11,
         8
       ],
       "opinion_cache": {
@@ -356,8 +356,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10,
-        4
+        11,
+        8
       ],
       "opinion_cache": {
         "9": 20
@@ -378,7 +378,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        1
+        4
       ],
       "opinion_cache": {
         "9": 22
@@ -405,8 +405,9 @@
       ],
       "children": [],
       "traits": [
-        3,
-        2
+        6,
+        10,
+        3
       ],
       "opinion_cache": {
         "1": -5
@@ -431,8 +432,9 @@
       "spouses": [],
       "children": [],
       "traits": [
-        1,
-        2
+        2,
+        7,
+        1
       ],
       "opinion_cache": {
         "1": -8
@@ -453,7 +455,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        1
+        2
       ],
       "opinion_cache": {}
     },
@@ -474,7 +476,7 @@
       ],
       "children": [],
       "traits": [
-        4
+        5
       ],
       "opinion_cache": {}
     },
@@ -493,8 +495,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        5,
-        1
+        7
       ],
       "opinion_cache": {}
     },
@@ -513,8 +514,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        4,
-        6
+        3,
+        4
       ],
       "opinion_cache": {}
     },
@@ -533,7 +534,6 @@
       "spouses": [],
       "children": [],
       "traits": [
-        5,
         6
       ],
       "opinion_cache": {}
@@ -553,7 +553,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        1,
+        9,
         8,
         3
       ],
@@ -574,7 +574,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        6
+        2
       ],
       "opinion_cache": {}
     }
@@ -822,9 +822,9 @@
     "1": {
       "chancellor": 9,
       "marshal": 14,
-      "steward": 2,
-      "spymaster": 24,
-      "chaplain": 7,
+      "steward": 18,
+      "spymaster": 17,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -835,10 +835,10 @@
     },
     "7": {
       "chancellor": 9,
-      "marshal": 14,
-      "steward": 1,
-      "spymaster": 24,
-      "chaplain": 21,
+      "marshal": 1,
+      "steward": 18,
+      "spymaster": 14,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -849,10 +849,10 @@
     },
     "8": {
       "chancellor": 9,
-      "marshal": 14,
-      "steward": 1,
-      "spymaster": 24,
-      "chaplain": 7,
+      "marshal": 1,
+      "steward": 18,
+      "spymaster": 14,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -864,9 +864,9 @@
     "9": {
       "chancellor": 1,
       "marshal": 14,
-      "steward": 2,
-      "spymaster": 24,
-      "chaplain": 7,
+      "steward": 18,
+      "spymaster": 17,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -877,10 +877,10 @@
     },
     "14": {
       "chancellor": 9,
-      "marshal": 6,
-      "steward": 1,
-      "spymaster": 24,
-      "chaplain": 7,
+      "marshal": 1,
+      "steward": 18,
+      "spymaster": 17,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -891,10 +891,10 @@
     },
     "17": {
       "chancellor": 9,
-      "marshal": 14,
-      "steward": 1,
-      "spymaster": 24,
-      "chaplain": 7,
+      "marshal": 1,
+      "steward": 18,
+      "spymaster": 14,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -905,10 +905,10 @@
     },
     "18": {
       "chancellor": 9,
-      "marshal": 14,
-      "steward": 1,
-      "spymaster": 24,
-      "chaplain": 7,
+      "marshal": 1,
+      "steward": 6,
+      "spymaster": 14,
+      "chaplain": 24,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
