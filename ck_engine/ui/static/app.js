@@ -221,6 +221,29 @@ function renderWars() {
   });
 }
 
+function renderFactions() {
+  const box = document.getElementById("factions");
+  if (!box) return;
+  const factions = state.factions || [];
+  if (!factions.length) {
+    box.innerHTML = `<div class="muted">无活跃派系</div>`;
+    return;
+  }
+  box.innerHTML = factions
+    .map(
+      (f) =>
+        `<div class="list-row"><span><span class="tag">${f.kind}</span>成员${f.members} · 力${f.power} · 不满${f.discontent}${
+          f.ultimatum ? ' <span class="tag war">最后通牒</span>' : ""
+        }</span><button class="mini" data-appease="${f.id}">安抚(25金)</button></div>`
+    )
+    .join("");
+  box.querySelectorAll("[data-appease]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      act({ action: "appease_faction", faction_id: Number(btn.dataset.appease) });
+    });
+  });
+}
+
 function renderLists() {
   document.getElementById("messages").innerHTML = (state.messages || [])
     .slice()
