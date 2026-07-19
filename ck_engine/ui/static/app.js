@@ -297,6 +297,45 @@ function escapeHtml(s) {
     .replaceAll(">", "&gt;");
 }
 
+function showEvent(ev) {
+  const overlay = document.getElementById("event-overlay");
+  const title = document.getElementById("event-title");
+  const desc = document.getElementById("event-desc");
+  const choices = document.getElementById("event-choices");
+  if (!overlay || !title || !desc || !choices) return;
+  title.textContent = ev.title || "事件";
+  desc.textContent = ev.description || "";
+  choices.innerHTML = "";
+  for (const c of ev.choices || []) {
+    const btn = document.createElement("button");
+    btn.textContent = c.text;
+    btn.className = "mini";
+    btn.addEventListener("click", () => {
+      overlay.style.display = "none";
+      act({ action: "resolve_event", event_id: ev.event_id, choice_id: c.id });
+    });
+    choices.appendChild(btn);
+  }
+  overlay.style.display = "flex";
+}
+
+function hideEvent() {
+  const overlay = document.getElementById("event-overlay");
+  if (overlay) overlay.style.display = "none";
+}
+
+function applyState(s) {
+  state = s;
+  selectedCounty = s.selected_county;
+  selectedArmy = s.selected_army;
+  if (s.pending_events && s.pending_events.length) {
+    showEvent(s.pending_events[0]);
+  } else {
+    hideEvent();
+  }
+  renderAll();
+}
+
 function bind() {
   document.querySelectorAll(".time-controls button").forEach((btn) => {
     btn.addEventListener("click", () => act({ action: "advance", days: Number(btn.dataset.days) }));

@@ -275,6 +275,19 @@ class GameAPI:
             "viewbox": viewbox(),
             "supply_low_threshold": SUPPLY_LOW_THRESHOLD,
             "saves": self._list_saves(),
+            "pending_events": [
+                {
+                    "event_id": inst.event_id,
+                    "title": inst.title,
+                    "description": inst.description,
+                    "choices": [
+                        {"id": c.id, "text": c.text, "ai_weight": c.ai_weight}
+                        for c in inst.choices
+                    ],
+                }
+                for inst in self.sim.events.pending
+                if inst.character == self.player_id
+            ],
         }
 
     def _holder_color(self, holder_id: int) -> str:
@@ -530,6 +543,17 @@ class GameAPI:
             f"白和：{(an.name if an else '?')} 与 {(dn.name if dn else '?')} 停战"
         )
         self.notify("已达成白和")
+
+    def _resolve_event(self, event_id: int, choice_id: int) -> None:
+        inst = next(
+            (e for e in self.sim.events.pending if e.event_id == event_id and e.character == self.player_id),
+            None,
+        )
+        if not inst:
+            return
+        self.sim.events.resolve_choice(self.sim.world, inst, choice_id)
+        self.sim.events.pending = [e for e in self.sim.events.pending if e is not inst]
+        self.notify(f"已选择事件选项：{inst.title}")
 
     def _save_file(self, name: Any = None) -> Path:
         if name is None or str(name).strip() == "":

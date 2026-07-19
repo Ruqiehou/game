@@ -39,7 +39,7 @@ class GameSimulation:
         self.diplomacy = DiplomacySystem()
         self.councils = CouncilRegistry()
         self.realm_laws: Dict[int, RealmLaw] = {}
-        self.player_ids: set = set()
+        self.player_ids: set = {r.id for r in self.world.rulers()}
         self.bootstrap()
 
     def bootstrap(self) -> None:
@@ -154,7 +154,11 @@ class GameSimulation:
             if c.is_ruler or c.is_adult(self.world.date)
         ][:50]
         self.events.daily_check(self.world, chars)
-        self.events.auto_resolve_all(self.world)
+        ai_pending = [e for e in self.events.pending if e.character not in self.player_ids]
+        self.events.pending = [e for e in self.events.pending if e.character in self.player_ids]
+        for inst in ai_pending:
+            best = max(inst.choices, key=lambda c: c.ai_weight)
+            self.events.resolve_choice(self.world, inst, best.id)
         self.tick_factions()
         self.tick_schemes()
         actions = AiDirector.monthly_actions(

@@ -81,6 +81,13 @@
       </aside>
     </main>
   </div>
+  <div id="event-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:1000;">
+    <div style="background:#12161f;border:1px solid var(--border);border-radius:10px;max-width:520px;width:92%;padding:18px;color:var(--text);">
+      <h3 id="event-title" style="margin:0 0 8px;font-size:16px;"></h3>
+      <p id="event-desc" style="margin:0 0 14px;font-size:13px;color:#cfd6e4;"></p>
+      <div id="event-choices" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  </div>
   <script src="/app.js"></script>
 </body>
 </html>

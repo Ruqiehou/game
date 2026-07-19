@@ -400,8 +400,10 @@ class World:
                 c.health -= 0.002 * (age - 45)
             if age > 60:
                 c.health -= 0.005
-            if 7 in c.traits:
-                c.health -= 0.01
+            for tid in c.traits:
+                t = next((x for x in self.traits if x.id == tid), None)
+                if t:
+                    c.health += float(t.health_mod)
             if random.random() < 0.001:
                 c.health -= 0.5
                 c.add_stress(10)

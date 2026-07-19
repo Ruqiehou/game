@@ -93,6 +93,7 @@ button:active { transform: translateY(1px); }
 .army.selected circle { stroke: #fff; stroke-width: 3; }
 .army.low-supply circle { stroke: #ff8a80; stroke-width: 2; }
 .army.in-enemy circle { stroke: #ffb74d; stroke-width: 2; }
+#event-overlay button { width: 100%; }
 .army text {
   fill: #fff; font-size: 10px; text-anchor: middle;
   pointer-events: none; font-weight: 700;

@@ -103,7 +103,7 @@ class EventEngine:
                     continue
                 if not self._eligible(world, who, ev):
                     continue
-                p = max(0.0001, min(0.05, ev.weight * 0.001))
+                p = max(0.001, min(0.25, ev.weight * 0.01))
                 if random.random() < p:
                     self.pending.append(
                         EventInstance(
