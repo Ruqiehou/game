@@ -327,9 +327,17 @@ class GameAPI:
             elif kind == "advance":
                 days = int(payload.get("days", 1))
                 days = max(1, min(365, days))
+                prev_chunk = self.sim.world.tick // 30
                 self._sync_player()
                 self.sim.run_days(days)
+                new_chunk = self.sim.world.tick // 30
                 self.notify(f"时间推进 {days} 天 → {self.sim.world.date}")
+                # 自动存档（每 30 天存一次）
+                if prev_chunk != new_chunk:
+                    try:
+                        self._save(None)
+                    except Exception:
+                        pass
             elif kind == "raise_army":
                 self._raise_army(int(payload["county_id"]))
             elif kind == "move_army":

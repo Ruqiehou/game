@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -70,16 +71,34 @@ class Handler(SimpleHTTPRequestHandler):
         self._send_json({"error": "not found"}, 404)
 
 
-def main() -> None:
+def main(host: str | None = None, port: int | None = None) -> None:
+    """启动 HTTP 服务器。
+
+    参数:
+        host: 绑定地址，默认 127.0.0.1
+        port: 绑定端口，默认 8765
+    """
+    if host is None:
+        host = HOST
+    if port is None:
+        port = PORT
     STATIC_DIR.mkdir(parents=True, exist_ok=True)
-    server = ThreadingHTTPServer((HOST, PORT), Handler)
-    print(f"地图 UI: http://{HOST}:{PORT}/")
+    server = ThreadingHTTPServer((host, port), Handler)
+    print(f"地图 UI: http://{host}:{port}/")
     print("Ctrl+C 退出")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print("\n已停止")
         server.server_close()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="CK 引擎地图服务器")
+    parser.add_argument("--port", type=int, default=PORT, help=f"服务器端口（默认 {PORT}）")
+    parser.add_argument("--host", type=str, default=HOST, help=f"绑定地址（默认 {HOST}）")
+    args = parser.parse_args()
+    main(host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
