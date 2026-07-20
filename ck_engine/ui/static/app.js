@@ -70,6 +70,7 @@ function renderAll() {
   renderClaims();
   renderDiplomacy();
   renderCountyBuildings();
+  renderCheat();
 }
 
 // ── 玩家选择 ─────────────────────────────────
@@ -416,6 +417,17 @@ function renderDiplomacy() {
     : `<div class="muted">无条约</div>`;
 }
 
+// ── 作弊模式 ─────────────────────────────────
+function renderCheat() {
+  const box = document.getElementById("cheat-status");
+  if (!box) return;
+  if (state.cheat_mode) {
+    box.innerHTML = `<span class="tag war">★ 已开启</span> 金币/威望/虔诚自动补满，压力归零`;
+  } else {
+    box.innerHTML = `<span class="muted">未开启</span>`;
+  }
+}
+
 // ── 存档 ─────────────────────────────────
 function renderSaves() {
   const box = document.getElementById("saves");
@@ -585,6 +597,10 @@ function bind() {
     const name = document.getElementById("save-name").value.trim() || undefined;
     act({ action: "save", name });
   });
+  // 作弊操作
+  document.getElementById("btn-toggle-cheat").addEventListener("click", () => act({ action: "toggle_cheat" }));
+  document.getElementById("btn-cheat-gold").addEventListener("click", () => act({ action: "cheat_add_gold", amount: 1000 }));
+  document.getElementById("btn-cheat-scheme").addEventListener("click", () => act({ action: "cheat_complete_scheme" }));
   document.getElementById("btn-load").addEventListener("click", () => {
     if (!selectedSave) return alert("请先选择存档");
     act({ action: "load", name: selectedSave });

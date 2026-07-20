@@ -31,6 +31,10 @@ from ck_engine.ui.map_layout import layout_for, points_to_svg, sea_band, viewbox
 
 
 class GameAPI:
+    CHEAT_GOLD = 99999.0
+    CHEAT_PRESTIGE = 99999.0
+    CHEAT_PIETY = 99999.0
+
     def __init__(self) -> None:
         self.sim = GameSimulation()
         self.player_id = self._default_player()
@@ -40,6 +44,7 @@ class GameAPI:
         self.messages: List[str] = ["欢迎。点击地图省份查看详情，使用侧栏下达指令。"]
         self.save_path = Path(__file__).resolve().parents[2] / "saves" / "autosave.json"
         self._lock = threading.Lock()
+        self.cheat_mode = False
 
     def _default_player(self) -> int:
         for c in self.sim.world.alive_characters():
@@ -280,6 +285,7 @@ class GameAPI:
             "viewbox": viewbox(),
             "supply_low_threshold": SUPPLY_LOW_THRESHOLD,
             "saves": self._list_saves(),
+            "cheat_mode": self.cheat_mode,
             "pending_events": [
                 {
                     "event_id": inst.event_id,
@@ -538,15 +544,55 @@ class GameAPI:
                 self._set_commander(int(payload["army_id"]), int(payload["character_id"]))
             elif kind == "fabricate_claim":
                 self._fabricate_claim(int(payload["county_id"]))
+            elif kind == "toggle_cheat":
+                self.cheat_mode = not self.cheat_mode
+                if self.cheat_mode:
+                    self._apply_cheat()
+                    self.notify("★ 作弊模式已开启：无限金钱/威望/虔诚")
+                else:
+                    self.notify("作弊模式已关闭")
+            elif kind == "cheat_add_gold":
+                amount = float(payload.get("amount", 1000))
+                player = self.sim.world.character(self.player_id)
+                if player:
+                    player.add_gold(amount)
+                    self.notify(f"★ 作弊：+{amount:.0f} 金")
+            elif kind == "cheat_complete_scheme":
+                self._cheat_complete_scheme()
             else:
                 self.notify(f"未知操作: {kind}")
         except Exception as e:  # noqa: BLE001 — 返回给前端
             self.notify(f"操作失败: {e}")
+        self._apply_cheat()
         return self._snapshot_unlocked()
 
     def _name(self, cid: int) -> str:
         c = self.sim.world.character(cid)
         return c.name if c else "?"
+
+    def _apply_cheat(self) -> None:
+        """作弊模式开启时，每次操作后补满金币/威望/虔诚。"""
+        if not self.cheat_mode:
+            return
+        player = self.sim.world.character(self.player_id)
+        if not player:
+            return
+        player.gold = self.CHEAT_GOLD
+        player.prestige = self.CHEAT_PRESTIGE
+        player.piety = self.CHEAT_PIETY
+        player.stress = 0
+
+    def _cheat_complete_scheme(self) -> None:
+        """作弊：立即完成所有玩家的进行中阴谋。"""
+        completed = 0
+        for s in list(self.sim.schemes.schemes.values()):
+            if s.owner == self.player_id and not s.exposed and not s.is_complete():
+                s.progress = 100.0
+                completed += 1
+        if completed:
+            self.notify(f"★ 作弊：{completed} 个阴谋已立即完成")
+        else:
+            self.notify("无进行中阴谋可完成")
 
     def _player_laws(self) -> Dict[str, Any]:
         w = self.sim.world

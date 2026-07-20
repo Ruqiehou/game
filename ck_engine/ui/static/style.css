@@ -186,3 +186,16 @@ button.mini:hover { background: #35507a; }
 
 /* ── 指挥官选择 ── */
 #commander-select { flex: 1; }
+
+/* ── 作弊面板 ── */
+.cheat-card {
+  border-color: #5a3a1a;
+  background: #1f1a0e;
+}
+.cheat-card h2 { color: #e0a84a; }
+.cheat-card .btn-row button {
+  background: #3a2a14; border-color: #5a3a1a; color: #e0c070;
+}
+.cheat-card .btn-row button:hover {
+  background: #4a3520; border-color: #e0a84a; color: #fff;
+}

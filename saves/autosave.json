@@ -1,17 +1,17 @@
 {
   "date": [
     1066,
-    4,
-    6
+    1,
+    31
   ],
-  "tick": 95,
+  "tick": 30,
   "player_id": 1,
   "characters": {
     "1": {
-      "gold": 478.4954897500002,
-      "prestige": 363.40000000000003,
-      "piety": 96.5,
-      "stress": 15,
+      "gold": 99999.0,
+      "prestige": 99999.0,
+      "piety": 99999.0,
+      "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
       "held_titles": [
@@ -35,8 +35,8 @@
         5
       ],
       "traits": [
-        10,
         1,
+        11,
         6
       ],
       "opinion_cache": {
@@ -65,7 +65,7 @@
         5
       ],
       "traits": [
-        9
+        10
       ],
       "opinion_cache": {}
     },
@@ -84,7 +84,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        9
+        6
       ],
       "opinion_cache": {}
     },
@@ -103,11 +103,9 @@
       "spouses": [],
       "children": [],
       "traits": [
-        2
+        5
       ],
-      "opinion_cache": {
-        "1": -40
-      }
+      "opinion_cache": {}
     },
     "5": {
       "gold": 50.0,
@@ -124,8 +122,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        4,
-        6
+        1,
+        7
       ],
       "opinion_cache": {}
     },
@@ -144,8 +142,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        12,
-        5,
+        1,
         2,
         11
       ],
@@ -154,9 +151,9 @@
       }
     },
     "7": {
-      "gold": 67.860300625,
-      "prestige": 161.4,
-      "piety": 99.5,
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
       "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
@@ -167,23 +164,20 @@
       "is_ruler": true,
       "father": 4294967295,
       "mother": 4294967295,
-      "spouses": [
-        21
-      ],
+      "spouses": [],
       "children": [],
       "traits": [
-        1
+        10,
+        12
       ],
       "opinion_cache": {
-        "1": 30,
-        "17": 5,
-        "14": -40
+        "1": 30
       }
     },
     "8": {
-      "gold": 0.0,
-      "prestige": 53.39999999999999,
-      "piety": 139.5,
+      "gold": 50.0,
+      "prestige": 50.0,
+      "piety": 50.0,
       "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
@@ -197,18 +191,18 @@
       "spouses": [],
       "children": [],
       "traits": [
-        8,
-        5
+        5,
+        11
       ],
       "opinion_cache": {
         "1": 28
       }
     },
     "9": {
-      "gold": 0.0,
-      "prestige": 497.30000000000007,
-      "piety": 141.5,
-      "stress": 5,
+      "gold": 280.0,
+      "prestige": 420.0,
+      "piety": 50.0,
+      "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
       "held_titles": [
@@ -230,11 +224,11 @@
         13
       ],
       "traits": [
-        12,
+        10,
+        11,
         1,
         6,
-        9,
-        8
+        9
       ],
       "opinion_cache": {
         "1": -30
@@ -261,7 +255,7 @@
         13
       ],
       "traits": [
-        2
+        10
       ],
       "opinion_cache": {}
     },
@@ -280,8 +274,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10,
-        2
+        11
       ],
       "opinion_cache": {}
     },
@@ -300,8 +293,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        1,
-        11
+        8,
+        3
       ],
       "opinion_cache": {}
     },
@@ -320,15 +313,16 @@
       "spouses": [],
       "children": [],
       "traits": [
-        3
+        3,
+        7
       ],
       "opinion_cache": {}
     },
     "14": {
-      "gold": 0.0,
-      "prestige": 178.40000000000003,
-      "piety": 96.5,
-      "stress": 20,
+      "gold": 90.0,
+      "prestige": 110.0,
+      "piety": 50.0,
+      "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
       "held_titles": [
@@ -338,12 +332,10 @@
       "is_ruler": true,
       "father": 4294967295,
       "mother": 4294967295,
-      "spouses": [
-        22
-      ],
+      "spouses": [],
       "children": [],
       "traits": [
-        11,
+        9,
         2,
         8
       ],
@@ -366,7 +358,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        2
+        9
       ],
       "opinion_cache": {
         "9": 20
@@ -387,16 +379,16 @@
       "spouses": [],
       "children": [],
       "traits": [
-        1
+        9
       ],
       "opinion_cache": {
         "9": 22
       }
     },
     "17": {
-      "gold": 197.97273852,
-      "prestige": 241.40000000000003,
-      "piety": 104.5,
+      "gold": 120.0,
+      "prestige": 150.0,
+      "piety": 50.0,
       "stress": 0,
       "health": 5.0,
       "life": "ALIVE",
@@ -414,21 +406,19 @@
       ],
       "children": [],
       "traits": [
-        10,
-        3,
-        8
+        6,
+        3
       ],
       "opinion_cache": {
-        "1": -5,
-        "7": 10
+        "1": -5
       }
     },
     "18": {
-      "gold": 1.9239507199999935,
-      "prestige": 128.40000000000003,
-      "piety": 99.5,
+      "gold": 100.0,
+      "prestige": 140.0,
+      "piety": 50.0,
       "stress": 0,
-      "health": 3.5,
+      "health": 5.0,
       "life": "ALIVE",
       "held_titles": [
         4,
@@ -442,8 +432,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        7,
-        3,
+        4,
         1
       ],
       "opinion_cache": {
@@ -465,7 +454,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        6
+        3,
+        9
       ],
       "opinion_cache": {}
     },
@@ -486,8 +476,8 @@
       ],
       "children": [],
       "traits": [
-        3,
-        10
+        8,
+        9
       ],
       "opinion_cache": {}
     },
@@ -503,12 +493,10 @@
       "is_ruler": false,
       "father": 4294967295,
       "mother": 4294967295,
-      "spouses": [
-        7
-      ],
+      "spouses": [],
       "children": [],
       "traits": [
-        9
+        3
       ],
       "opinion_cache": {}
     },
@@ -524,13 +512,10 @@
       "is_ruler": false,
       "father": 4294967295,
       "mother": 4294967295,
-      "spouses": [
-        14
-      ],
+      "spouses": [],
       "children": [],
       "traits": [
-        5,
-        3
+        4
       ],
       "opinion_cache": {}
     },
@@ -549,8 +534,8 @@
       "spouses": [],
       "children": [],
       "traits": [
-        4,
-        1
+        2,
+        12
       ],
       "opinion_cache": {}
     },
@@ -559,7 +544,7 @@
       "prestige": 80.0,
       "piety": 50.0,
       "stress": 0,
-      "health": 4.859000000000001,
+      "health": 5.0,
       "life": "ALIVE",
       "held_titles": [],
       "primary_title": 4294967295,
@@ -569,7 +554,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        10,
+        7,
         8,
         3
       ],
@@ -590,8 +575,7 @@
       "spouses": [],
       "children": [],
       "traits": [
-        6,
-        5
+        8
       ],
       "opinion_cache": {}
     }
@@ -610,12 +594,12 @@
     "3": {
       "holder": 7,
       "control": 100.0,
-      "development": 19
+      "development": 18
     },
     "4": {
       "holder": 17,
       "control": 100.0,
-      "development": 17
+      "development": 16
     },
     "5": {
       "holder": 18,
@@ -630,7 +614,7 @@
     "7": {
       "holder": 9,
       "control": 100.0,
-      "development": 25
+      "development": 24
     },
     "8": {
       "holder": 9,
@@ -645,12 +629,12 @@
     "10": {
       "holder": 1,
       "control": 100.0,
-      "development": 9
+      "development": 8
     },
     "11": {
       "holder": 1,
       "control": 100.0,
-      "development": 16
+      "development": 15
     },
     "12": {
       "holder": 17,
@@ -787,118 +771,8 @@
       "de_facto_vassals": []
     }
   },
-  "wars": [
-    {
-      "id": 1,
-      "name": "利奥夫温·戈德温森 对 贝叶的奥多 的征服",
-      "cb": "CONQUEST",
-      "attacker_primary": 8,
-      "defender_primary": 14,
-      "start": [
-        1066,
-        3,
-        1
-      ],
-      "warscore": 0,
-      "active": true,
-      "result": "ONGOING",
-      "participants": [
-        {
-          "character": 8,
-          "is_attacker": true,
-          "joined": [
-            1066,
-            3,
-            1
-          ]
-        },
-        {
-          "character": 14,
-          "is_attacker": false,
-          "joined": [
-            1066,
-            3,
-            1
-          ]
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "name": "莫卡·诺森布里亚 对 吉尔思·戈德温森 的征服",
-      "cb": "CONQUEST",
-      "attacker_primary": 18,
-      "defender_primary": 7,
-      "start": [
-        1066,
-        4,
-        1
-      ],
-      "warscore": 0,
-      "active": true,
-      "result": "ONGOING",
-      "participants": [
-        {
-          "character": 18,
-          "is_attacker": true,
-          "joined": [
-            1066,
-            4,
-            1
-          ]
-        },
-        {
-          "character": 7,
-          "is_attacker": false,
-          "joined": [
-            1066,
-            4,
-            1
-          ]
-        },
-        {
-          "character": 17,
-          "is_attacker": true,
-          "joined": [
-            1066,
-            4,
-            1
-          ]
-        }
-      ]
-    }
-  ],
-  "armies": [
-    {
-      "id": 5,
-      "owner": 18,
-      "name": "军团#5",
-      "location": 5,
-      "commander": 18,
-      "status": "IDLE",
-      "morale": 100.0,
-      "supply": 100.0,
-      "path": [],
-      "stacks": [
-        {
-          "unit_type": "LEVIES",
-          "men": 1076
-        },
-        {
-          "unit_type": "HEAVY_INFANTRY",
-          "men": 107
-        },
-        {
-          "unit_type": "ARCHERS",
-          "men": 89
-        },
-        {
-          "unit_type": "LIGHT_CAVALRY",
-          "men": 53
-        }
-      ]
-    }
-  ],
+  "wars": [],
+  "armies": [],
   "sieges": [],
   "diplomacy": {
     "relations": {
@@ -915,41 +789,6 @@
         "rival": false,
         "marriage_pact": false,
         "non_aggression": true
-      },
-      "14,22": {
-        "allied": false,
-        "at_war": false,
-        "rival": false,
-        "marriage_pact": true,
-        "non_aggression": false
-      },
-      "7,21": {
-        "allied": false,
-        "at_war": false,
-        "rival": false,
-        "marriage_pact": true,
-        "non_aggression": false
-      },
-      "8,14": {
-        "allied": false,
-        "at_war": true,
-        "rival": false,
-        "marriage_pact": false,
-        "non_aggression": false
-      },
-      "7,18": {
-        "allied": false,
-        "at_war": true,
-        "rival": false,
-        "marriage_pact": false,
-        "non_aggression": false
-      },
-      "7,17": {
-        "allied": false,
-        "at_war": true,
-        "rival": false,
-        "marriage_pact": false,
-        "non_aggression": false
       }
     },
     "treaties": [
@@ -976,12 +815,7 @@
       ]
     },
     "truce_until": {},
-    "war_exhaustion": {
-      "8": 17.0,
-      "14": 16.6,
-      "18": 16.0,
-      "7": 15.8
-    }
+    "war_exhaustion": {}
   },
   "factions": [],
   "schemes": [],
@@ -991,7 +825,7 @@
       "marshal": 6,
       "steward": 14,
       "spymaster": 24,
-      "chaplain": 18,
+      "chaplain": 8,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1003,9 +837,9 @@
     "7": {
       "chancellor": 9,
       "marshal": 6,
-      "steward": 14,
+      "steward": 1,
       "spymaster": 24,
-      "chaplain": 1,
+      "chaplain": 14,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1017,9 +851,9 @@
     "8": {
       "chancellor": 9,
       "marshal": 6,
-      "steward": 14,
+      "steward": 1,
       "spymaster": 24,
-      "chaplain": 1,
+      "chaplain": 14,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1029,11 +863,11 @@
       }
     },
     "9": {
-      "chancellor": 1,
+      "chancellor": 24,
       "marshal": 6,
-      "steward": 14,
-      "spymaster": 24,
-      "chaplain": 18,
+      "steward": 1,
+      "spymaster": 7,
+      "chaplain": 14,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1047,7 +881,7 @@
       "marshal": 6,
       "steward": 1,
       "spymaster": 24,
-      "chaplain": 18,
+      "chaplain": 8,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1059,9 +893,9 @@
     "17": {
       "chancellor": 9,
       "marshal": 6,
-      "steward": 14,
+      "steward": 1,
       "spymaster": 24,
-      "chaplain": 1,
+      "chaplain": 14,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1073,9 +907,9 @@
     "18": {
       "chancellor": 9,
       "marshal": 6,
-      "steward": 14,
+      "steward": 1,
       "spymaster": 24,
-      "chaplain": 1,
+      "chaplain": 14,
       "tasks": {
         "CHANCELLOR": "DOMESTIC_RELATIONS",
         "MARSHAL": "TRAIN_COMMANDERS",
@@ -1109,54 +943,11 @@
     "[1066-01-01] 威廉·征服者 获得头衔「卡昂伯爵领」",
     "[1066-01-01] 贝叶的奥多 获得头衔「贝叶伯爵领」",
     "[1066-01-01] 1066 年场景已加载：哈罗德统治英格兰，威廉虎视眈眈。",
-    "[1066-01-01] 托斯蒂格与兄长不和，北方伯爵心怀观望。",
-    "[1066-01-01] 哈罗德·戈德温森 开始策划拉拢（目标：埃德蒙·哈罗德森）",
-    "[1066-02-01] 利奥夫温·戈德温森 事件「宫廷丑闻」选择：严厉追查",
-    "[1066-02-01] 利奥夫温·戈德温森 事件「虔诚的捐赠」选择：慷慨解囊",
-    "[1066-02-01] 利奥夫温·戈德温森 事件「神秘访客」选择：购买情报",
-    "[1066-02-01] 贝叶的奥多 事件「宫廷丑闻」选择：严厉追查",
-    "[1066-02-01] 莫卡·诺森布里亚 事件「节日庆典」选择：大办特办",
-    "[1066-02-01] 吉尔思·戈德温森 举办了宴会",
-    "[1066-02-01] 贝叶的奥多 与 埃德温之妹埃尔德吉斯 成婚",
-    "[1066-03-01] 吉尔思·戈德温森 事件「诗人献辞」选择：重金赏赐",
-    "[1066-03-01] 威廉·征服者 事件「虔诚的捐赠」选择：慷慨解囊",
-    "[1066-03-01] 威廉·征服者 事件「瘟疫阴影」选择：封闭宫廷",
-    "[1066-03-01] 贝叶的奥多 事件「边境劫掠」选择：派兵清剿",
-    "[1066-03-01] 贝叶的奥多 事件「商路开通」选择：投资商路",
-    "[1066-03-01] 埃德温·麦西亚 事件「丰收之年」选择：收下贡赋",
-    "[1066-03-01] 埃德温·麦西亚 事件「诗人献辞」选择：重金赏赐",
-    "[1066-03-01] 吉尔思·戈德温森 与 诺曼侍女艾娃 成婚",
-    "[1066-03-01] 领地 肯特 发展度提升",
-    "[1066-03-01] 宣战！征服 (战争 1)",
-    "[1066-03-01] 利奥夫温·戈德温森 征召了 224 人 (军团 1)",
-    "[1066-03-01] 利奥夫温·戈德温森 举办了宴会",
-    "[1066-03-01] 威廉·征服者 征召了 2538 人 (军团 2)",
-    "[1066-03-01] 贝叶的奥多 征召了 228 人 (军团 3)",
-    "[1066-03-01] 贝叶的奥多 对 吉尔思·戈德温森 启动阴谋「谋杀」(#2)",
-    "[1066-03-01] 利奥夫温·戈德温森 国库空虚，被迫解散 军团#1",
-    "[1066-04-01] 吉尔思·戈德温森 事件「决斗挑战」选择：派骑士代战",
-    "[1066-04-01] 威廉·征服者 事件「封臣的抱怨」选择：安抚许诺",
-    "[1066-04-01] 威廉·征服者 事件「婚姻生活」选择：享受温存",
-    "[1066-04-01] 威廉·征服者 事件「学者来访」选择：购入抄本",
-    "[1066-04-01] 埃德温·麦西亚 事件「学者来访」选择：购入抄本",
-    "[1066-04-01] 莫卡·诺森布里亚 事件「神秘访客」选择：购买情报",
-    "[1066-04-01] 阴谋败露！哈罗德·戈德温森 对 埃德蒙·哈罗德森 的密谋被发现",
-    "[1066-04-01] 阴谋败露！贝叶的奥多 对 吉尔思·戈德温森 的密谋被发现",
-    "[1066-04-01] 利奥夫温·戈德温森 征召了 224 人 (军团 4)",
-    "[1066-04-01] 领地 诺曼底 发展度提升",
-    "[1066-04-01] 军团#3 向 东盎格利亚 进军",
-    "[1066-04-01] 贝叶的奥多 为军团补充了精锐",
-    "[1066-04-01] 宣战！征服 (战争 2)",
-    "[1066-04-01] 莫卡·诺森布里亚 征召了 1076 人 (军团 5)",
-    "[1066-04-01] 威廉·征服者 国库空虚，被迫解散 军团#2",
-    "[1066-04-01] 贝叶的奥多 国库空虚，被迫解散 军团#3",
-    "[1066-04-01] 利奥夫温·戈德温森 国库空虚，被迫解散 军团#4"
+    "[1066-01-01] 托斯蒂格与兄长不和，北方伯爵心怀观望。"
   ],
   "messages": [
     "欢迎。点击地图省份查看详情，使用侧栏下达指令。",
-    "已发起拉拢 → 埃德蒙·哈罗德森（#1）",
-    "时间推进 35 天 → 1066-02-05",
-    "已存档 → autosave.json",
-    "时间推进 60 天 → 1066-04-06"
+    "★ 作弊模式已开启：无限金钱/威望/虔诚",
+    "时间推进 30 天 → 1066-01-31"
   ]
 }
