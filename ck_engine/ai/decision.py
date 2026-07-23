@@ -87,7 +87,7 @@ class AiDirector:
                                     kind="raise_army",
                                     owner=ruler,
                                     location=loc,
-                                    levies=estimate_levies(world, ruler),
+                                    levies=estimate_local_levies(world, ruler),
                                 )
                             )
                     else:
@@ -136,7 +136,7 @@ class AiDirector:
                                 kind="raise_army",
                                 owner=ruler,
                                 location=loc,
-                                levies=estimate_levies(world, ruler),
+                                levies=estimate_local_levies(world, ruler),
                             )
                         )
 
@@ -434,16 +434,31 @@ def capital_of(world: World, who: int) -> Optional[int]:
     return t.counties[0] if t.counties else None
 
 
+def estimate_local_levies(world: World, who: int) -> int:
+    """估算首都郡的征召兵力（3 个月量），避免 AI 一次性征召全国兵力导致破产。"""
+    loc = capital_of(world, who)
+    if loc is None:
+        return estimate_levies(world, who)
+    county = world.map.get(loc)
+    if not county:
+        return estimate_levies(world, who)
+    return max(100, county.monthly_levies() * 3)
+
+
 def estimate_levies(world: World, who: int) -> int:
     c = world.character(who)
     if not c:
         return 0
+    seen: set = set()
     total = 0
     for tid in c.held_titles:
         t = world.title(tid)
         if not t:
             continue
         for cid in t.counties:
+            if cid in seen:
+                continue
+            seen.add(cid)
             county = world.map.get(cid)
             if county:
                 total += county.monthly_levies()

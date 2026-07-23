@@ -39,7 +39,7 @@ class GameSimulation:
         self.diplomacy = DiplomacySystem()
         self.councils = CouncilRegistry()
         self.realm_laws: Dict[int, RealmLaw] = {}
-        self.player_ids: set = {r.id for r in self.world.rulers()}
+        self.player_ids: set = set()
         self.bootstrap()
 
     def bootstrap(self) -> None:
@@ -737,12 +737,16 @@ def estimate_power(world: World, who: int) -> int:
     c = world.character(who)
     if not c:
         return 50
+    seen: set = set()
     total = 0
     for tid in c.held_titles:
         t = world.title(tid)
         if not t:
             continue
         for cid in t.counties:
+            if cid in seen:
+                continue
+            seen.add(cid)
             county = world.map.get(cid)
             if county:
                 total += county.monthly_levies()
